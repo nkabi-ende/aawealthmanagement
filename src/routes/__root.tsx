@@ -55,7 +55,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
           >
             Try again
           </button>
-          <a
+          
             href="/"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
@@ -79,14 +79,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "AA Wealth | Insurance Broker in Durban, KZN — Funeral, Life & Income Cover" },
       { property: "og:description", content: "AA Wealth is a licensed Durban insurance brokerage (FSP 50739) building complete family protection plans — funeral, life, income protection, critical illness & savings." },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://aawealthmanagement.co.za" },
+      { property: "og:image", content: "https://aawealthmanagement.co.za/og-image.png" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: "AA Wealth Management — Protect today. Build tomorrow." },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "AA Wealth | Insurance Broker in Durban, KZN — Funeral, Life & Income Cover" },
       { name: "twitter:description", content: "AA Wealth is a licensed Durban insurance brokerage (FSP 50739) building complete family protection plans — funeral, life, income protection, critical illness & savings." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/34dc8e98-818c-4f61-9cde-4111f0fed7ac/id-preview-f48473ba--06d60654-9aa1-4a1c-a7f8-a60fb70fea50.lovable.app-1779914041346.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/34dc8e98-818c-4f61-9cde-4111f0fed7ac/id-preview-f48473ba--06d60654-9aa1-4a1c-a7f8-a60fb70fea50.lovable.app-1779914041346.png" },
+      { name: "twitter:image", content: "https://aawealthmanagement.co.za/og-image.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "icon", href: "/favicon.ico", sizes: "any" },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32.png" },
+      { rel: "icon", type: "image/png", sizes: "192x192", href: "/favicon-192.png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
