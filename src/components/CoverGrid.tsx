@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { ReviewButton } from "./ReviewDialog";
 import type { ReactNode } from "react";
 
 type Item = {
@@ -160,40 +160,33 @@ export default function CoverGrid() {
           <div className="ic">{it.icon}</div>
           <h3>{it.title}</h3>
           <p>{it.desc}</p>
-          <a
+          <ReviewButton
             className="more"
-            href={
-              "/contact?cover=" +
-              encodeURIComponent(
-                (
-                  {
-                    "Life Cover": "Life cover",
-                    "Funeral Cover": "Funeral cover",
-                    "Advanced Pensioners Funeral Plan": "Pensioners funeral cover",
-                    "Income Protection": "Income protection",
-                    "Critical Illness": "Critical illness",
-                    "Disability Cover": "Disability cover",
-                    "Savings & Retirement": "Savings & retirement",
-                    "Group & Stokvel": "Group & stokvel",
-                  } as Record<string, string>
-                )[it.title] ?? "Not sure — help me choose",
-              )
+            cover={
+              (
+                {
+                  "Life Cover": "Life cover",
+                  "Funeral Cover": "Funeral cover",
+                  "Advanced Pensioners Funeral Plan": "Pensioners funeral cover",
+                  "Income Protection": "Income protection",
+                  "Critical Illness": "Critical illness",
+                  "Disability Cover": "Disability cover",
+                  "Savings & Retirement": "Savings & retirement",
+                  "Group & Stokvel": "Group & stokvel",
+                } as Record<string, string>
+              )[it.title] ?? "Not sure — help me choose"
             }
           >
             {it.cta ?? "Discuss this cover →"}
-          </a>
+          </ReviewButton>
         </article>
       ))}
       <article className="card cta-card">
         <h3>Not sure what you need?</h3>
         <p>Let us map your gaps in a free 15-minute review.</p>
-        <Link
-          className="btn btn-gold"
-          to="/contact"
-          style={{ alignSelf: "flex-start", marginTop: 6 }}
-        >
+        <ReviewButton className="btn btn-gold" style={{ alignSelf: "flex-start", marginTop: 6 }}>
           Start free
-        </Link>
+        </ReviewButton>
       </article>
     </div>
   );

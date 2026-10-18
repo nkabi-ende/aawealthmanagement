@@ -1,3 +1,4 @@
+import ReviewProvider from "@/components/ReviewDialog";
 import BrandPreloader from "@/components/BrandPreloader";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
@@ -147,7 +148,9 @@ function RootComponent() {
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <BrandPreloader />
       <div id="aa-site-content">
-        <Outlet />
+        <ReviewProvider>
+          <Outlet />
+        </ReviewProvider>
       </div>
     </QueryClientProvider>
   );

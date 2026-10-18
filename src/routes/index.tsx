@@ -1,8 +1,7 @@
-import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, ShieldCheck, Heart, Wallet, Users, Check, ArrowRight } from "lucide-react";
 import SiteLayout from "@/components/SiteLayout";
-import LeadForm from "@/components/LeadForm";
+import { ReviewButton, useReview } from "@/components/ReviewDialog";
 import CoverGrid from "@/components/CoverGrid";
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -38,10 +37,9 @@ const goals = [
   },
 ];
 function Home() {
-  const [interest, setInterest] = useState("Life cover");
+  const { openReview } = useReview();
   function choose(value: string) {
-    setInterest(value);
-    document.getElementById("review")?.scrollIntoView({ behavior: "smooth" });
+    openReview(value);
   }
   return (
     <SiteLayout>
@@ -61,9 +59,9 @@ function Home() {
               protection plan around what matters to you.
             </p>
             <div className="hero-actions">
-              <a href="#review" className="btn btn-gold">
+              <ReviewButton className="btn btn-gold">
                 Start my free review <ArrowUpRight size={19} />
-              </a>
+              </ReviewButton>
               <Link to="/services" className="text-link">
                 Explore cover <ArrowRight size={17} />
               </Link>
@@ -239,7 +237,22 @@ function Home() {
               before cancelling an existing policy.
             </p>
           </div>
-          <LeadForm defaultInterest={interest} />
+          <div className="review-launch-card">
+            <p className="eyebrow">A few simple steps</p>
+            <h3>
+              Tell us what matters.
+              <br />
+              We’ll take it from there.
+            </h3>
+            <p>
+              Choose your cover, answer a few short questions and review your details. No paperwork
+              to get started.
+            </p>
+            <ReviewButton className="btn btn-gold">
+              Start my free review <ArrowUpRight size={18} />
+            </ReviewButton>
+            <span>Free initial review · No obligation</span>
+          </div>
         </div>
       </section>
       <section className="sec white">

@@ -8,7 +8,13 @@ import {
 } from "@/lib/intake";
 
 const STEPS = ["Your cover", "Your needs", "Your details", "Review"];
-export default function LeadForm({ defaultInterest = "Life cover" }: { defaultInterest?: string }) {
+export default function LeadForm({
+  defaultInterest = "Life cover",
+  readCoverFromUrl = true,
+}: {
+  defaultInterest?: string;
+  readCoverFromUrl?: boolean;
+}) {
   const id = useId();
   const heading = useRef<HTMLHeadingElement>(null);
   const [step, setStep] = useState(0);
@@ -34,36 +40,43 @@ export default function LeadForm({ defaultInterest = "Life cover" }: { defaultIn
     setReady(false);
   }, [defaultInterest]);
   useEffect(() => {
+    if (!readCoverFromUrl) return;
     const cover = new URLSearchParams(window.location.search).get("cover");
     if (cover && COVER_OPTIONS.includes(cover)) setData((d) => ({ ...d, cover }));
   }, []);
   const questions = getCoverQuestions(data.cover);
+  const contactStep = questions.length + 1;
+  const reviewStep = questions.length + 2;
+  const phase = step === 0 ? 0 : step <= questions.length ? 1 : step === contactStep ? 2 : 3;
   const move = (next: number) => {
     setStep(next);
     setReady(false);
-    window.setTimeout(() => heading.current?.focus({ preventScroll: true }), 0);
+    window.setTimeout(() => {
+      heading.current?.focus({ preventScroll: true });
+      heading.current?.closest(".review-modal-scroll")?.scrollTo({ top: 0 });
+    }, 0);
   };
   const message = formatIntakeMessage(data);
   const formSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (step < 3) move(step + 1);
+    if (step < reviewStep) move(step + 1);
     else setReady(true);
   };
   return (
     <div className="formcard enquiry-card guided-intake">
-      <div className="intake-progress" aria-label={`Step ${step + 1} of 4: ${STEPS[step]}`}>
+      <div className="intake-progress" aria-label={`Step ${phase + 1} of 4: ${STEPS[phase]}`}>
         <div className="intake-progress-label">
           <span>YOUR PERSONALISED ENQUIRY</span>
-          <strong>{step + 1} / 4</strong>
+          <strong>{phase + 1} / 4</strong>
         </div>
         <ol>
           {STEPS.map((label, i) => (
             <li
               key={label}
-              aria-current={step === i ? "step" : undefined}
-              className={i <= step ? "reached" : ""}
+              aria-current={phase === i ? "step" : undefined}
+              className={i <= phase ? "reached" : ""}
             >
-              <span>{i < step ? <Check size={12} /> : i + 1}</span>
+              <span>{i < phase ? <Check size={12} /> : i + 1}</span>
               {label}
             </li>
           ))}
@@ -76,7 +89,7 @@ export default function LeadForm({ defaultInterest = "Life cover" }: { defaultIn
             "A little about your needs.",
             "How can we reach you?",
             ready ? "Your enquiry is ready." : "Does everything look right?",
-          ][step]
+          ][phase]
         }
       </h3>
       <p className="form-intro">
@@ -88,7 +101,7 @@ export default function LeadForm({ defaultInterest = "Life cover" }: { defaultIn
             ready
               ? "Open WhatsApp and press Send to share your enquiry. It has not been submitted online."
               : "Review your answers before preparing your message.",
-          ][step]
+          ][phase]
         }
       </p>
       <form onSubmit={formSubmit}>
@@ -114,10 +127,12 @@ export default function LeadForm({ defaultInterest = "Life cover" }: { defaultIn
             </p>
           </fieldset>
         )}
-        {step === 1 && (
+        {phase === 1 && (
           <fieldset className="intake-fieldset">
-            <legend className="intake-selection">{data.cover}</legend>
-            {questions.map((q) => (
+            <legend className="intake-selection">
+              {data.cover} · Question {step} of {questions.length}
+            </legend>
+            {questions.slice(step - 1, step).map((q) => (
               <div className="field" key={q.key}>
                 <label htmlFor={id + q.key}>{q.label}</label>
                 <select
@@ -145,7 +160,7 @@ export default function LeadForm({ defaultInterest = "Life cover" }: { defaultIn
             </div>
           </fieldset>
         )}
-        {step === 2 && (
+        {step === contactStep && (
           <fieldset className="intake-fieldset">
             <legend className="sr-only">Your contact details</legend>
             <div className="field">
@@ -191,63 +206,66 @@ export default function LeadForm({ defaultInterest = "Life cover" }: { defaultIn
                 placeholder="you@example.com"
               />
             </div>
-            <div className="field">
-              <label htmlFor={id + "-province"}>Province</label>
-              <select
-                id={id + "-province"}
-                value={data.province}
-                onChange={(e) => update("province", e.target.value)}
-              >
-                {[
-                  "KwaZulu-Natal",
-                  "Gauteng",
-                  "Western Cape",
-                  "Eastern Cape",
-                  "Free State",
-                  "Limpopo",
-                  "Mpumalanga",
-                  "North West",
-                  "Northern Cape",
-                ].map((p) => (
-                  <option key={p}>{p}</option>
-                ))}
-              </select>
-            </div>
-            <div className="row2">
+            <details className="intake-extra">
+              <summary>Add location & callback preferences (optional)</summary>
               <div className="field">
-                <label htmlFor={id + "-preference"}>Contact me by</label>
+                <label htmlFor={id + "-province"}>Province</label>
                 <select
-                  id={id + "-preference"}
-                  value={data.preference}
-                  onChange={(e) => update("preference", e.target.value)}
-                >
-                  <option>WhatsApp</option>
-                  <option>Phone call</option>
-                </select>
-              </div>
-              <div className="field">
-                <label htmlFor={id + "-time"}>Preferred time</label>
-                <select
-                  id={id + "-time"}
-                  value={data.contactTime}
-                  onChange={(e) => update("contactTime", e.target.value)}
+                  id={id + "-province"}
+                  value={data.province}
+                  onChange={(e) => update("province", e.target.value)}
                 >
                   {[
-                    "Any business-hour time",
-                    "Morning (08:00–12:00)",
-                    "Afternoon (12:00–17:00)",
-                  ].map((o) => (
-                    <option key={o}>{o}</option>
+                    "KwaZulu-Natal",
+                    "Gauteng",
+                    "Western Cape",
+                    "Eastern Cape",
+                    "Free State",
+                    "Limpopo",
+                    "Mpumalanga",
+                    "North West",
+                    "Northern Cape",
+                  ].map((p) => (
+                    <option key={p}>{p}</option>
                   ))}
                 </select>
               </div>
-            </div>
+              <div className="row2">
+                <div className="field">
+                  <label htmlFor={id + "-preference"}>Contact me by</label>
+                  <select
+                    id={id + "-preference"}
+                    value={data.preference}
+                    onChange={(e) => update("preference", e.target.value)}
+                  >
+                    <option>WhatsApp</option>
+                    <option>Phone call</option>
+                  </select>
+                </div>
+                <div className="field">
+                  <label htmlFor={id + "-time"}>Preferred time</label>
+                  <select
+                    id={id + "-time"}
+                    value={data.contactTime}
+                    onChange={(e) => update("contactTime", e.target.value)}
+                  >
+                    {[
+                      "Any business-hour time",
+                      "Morning (08:00–12:00)",
+                      "Afternoon (12:00–17:00)",
+                    ].map((o) => (
+                      <option key={o}>{o}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </details>
             <p className="small-note">
               Times are South African time. We’ll arrange a suitable slot with you.
             </p>
           </fieldset>
         )}
-        {step === 3 && (
+        {step === reviewStep && (
           <>
             <div className="intake-review">
               <div className="review-group">
@@ -273,7 +291,7 @@ export default function LeadForm({ defaultInterest = "Life cover" }: { defaultIn
               <div className="review-group">
                 <div className="review-group-head">
                   <strong>Contact details</strong>
-                  <button type="button" onClick={() => move(2)}>
+                  <button type="button" onClick={() => move(contactStep)}>
                     Edit
                   </button>
                 </div>
@@ -328,7 +346,7 @@ export default function LeadForm({ defaultInterest = "Life cover" }: { defaultIn
               </button>
             )}
             <button type="submit" className="btn btn-gold">
-              {step === 3 ? "Prepare my quote enquiry" : "Continue"}
+              {step === reviewStep ? "Prepare my quote enquiry" : "Continue"}
               <ArrowUpRight size={18} />
             </button>
           </div>

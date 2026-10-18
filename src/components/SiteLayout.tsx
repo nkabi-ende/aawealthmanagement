@@ -1,3 +1,4 @@
+import { ReviewButton } from "./ReviewDialog";
 import BrandMark from "./BrandMark";
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
@@ -63,13 +64,12 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
             ))}
           </nav>
           <div className="nav-cta">
-            <Link
-              to="/contact"
+            <ReviewButton
               className="btn btn-gold"
               style={{ padding: ".6rem 1.05rem", minHeight: 42, fontSize: ".9rem" }}
             >
               Free Review
-            </Link>
+            </ReviewButton>
             <a href={WA_URL} className="wa-btn" aria-label="Chat with AA Wealth on WhatsApp">
               <WaIcon />
             </a>
@@ -93,9 +93,9 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
             {n.label}
           </Link>
         ))}
-        <Link to="/contact" className="btn btn-gold">
+        <ReviewButton className="btn btn-gold" onClick={() => setOpen(false)}>
           Get my free review
-        </Link>
+        </ReviewButton>
       </div>
 
       <main id="main" tabIndex={-1}>
@@ -109,9 +109,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
         <WaIcon size={30} />
       </a>
       <div className="mbar">
-        <Link to="/contact" className="btn btn-gold">
-          Free review
-        </Link>
+        <ReviewButton className="btn btn-gold">Free review</ReviewButton>
         <a href={WA_URL} className="btn btn-green">
           <WaIcon size={18} /> WhatsApp
         </a>
@@ -130,9 +128,7 @@ function FinalCta() {
           obligation to buy.
         </p>
         <div className="row">
-          <Link to="/contact" className="btn btn-gold">
-            Get my free protection review
-          </Link>
+          <ReviewButton className="btn btn-gold">Get my free protection review</ReviewButton>
           <a href={WA_URL} className="btn btn-ghost on-dark">
             WhatsApp us now
           </a>
