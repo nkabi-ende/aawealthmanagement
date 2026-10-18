@@ -259,7 +259,7 @@ function Home() {
               ],
               [
                 "Will I get an instant premium here?",
-                "No. This is an enquiry for an advisor review. A personalised quote depends on the product, your needs and the insurer’s assessment.",
+                "No. This guided intake helps your advisor prepare a personalised quote. Premiums depend on the product, your needs and the insurer’s assessment.",
               ],
               [
                 "What happens after I send my enquiry?",
