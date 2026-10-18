@@ -1,109 +1,275 @@
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowUpRight, ShieldCheck, Heart, Wallet, Users, Check, ArrowRight } from "lucide-react";
 import SiteLayout from "@/components/SiteLayout";
+import LeadForm from "@/components/LeadForm";
 import CoverGrid from "@/components/CoverGrid";
-
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "AA Wealth | Insurance Broker in Durban, KZN — Funeral, Life & Income Cover" },
-      { name: "description", content: "Licensed Durban broker (FSP 50739) building complete family protection — funeral, life, income, illness & savings. Free WhatsApp review." },
+      { title: "AA Wealth Management | Life Insurance & Family Protection, Durban" },
+      {
+        name: "description",
+        content:
+          "Protect the people and life you’re building. Explore life cover, funeral cover and income protection with a Durban advisor. Start your free AA Wealth review.",
+      },
     ],
   }),
   component: Home,
 });
-
-const WA = "https://wa.me/27765885126?text=Sawubona%20AA%20Wealth%2C%20I%27d%20like%20a%20free%20review";
-
+const goals = [
+  {
+    title: "Protect my family",
+    interest: "Life cover",
+    icon: Users,
+    text: "Help with school fees, the home loan and everyday living costs.",
+  },
+  {
+    title: "Protect my income",
+    interest: "Income protection",
+    icon: Wallet,
+    text: "Explore support if illness or injury affects your ability to earn.",
+  },
+  {
+    title: "Plan for a funeral",
+    interest: "Funeral cover",
+    icon: Heart,
+    text: "Understand family cover, waiting periods and the claims process.",
+  },
+];
 function Home() {
+  const [interest, setInterest] = useState("Life cover");
+  function choose(value: string) {
+    setInterest(value);
+    document.getElementById("review")?.scrollIntoView({ behavior: "smooth" });
+  }
   return (
     <SiteLayout>
-      <section className="hero" id="top" aria-labelledby="h1">
-        <div className="wrap hero-grid">
-          <div>
-            <span className="hero-pill"><span className="pulse-dot" /> Free 15-min review · No obligation</span>
-            <h1 id="h1">Cover for life — <em>not just a funeral.</em></h1>
-            <p className="sub">Get a free WhatsApp review with a licensed Durban advisor. See exactly where your family is exposed — and fix it in minutes.</p>
-            <div className="hero-cta">
-              <Link to="/contact" className="btn btn-gold">Get my free review →</Link>
-              <a href={WA} className="btn btn-ghost on-dark">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 018.413 3.488 11.82 11.82 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24z" /></svg>
-                WhatsApp us
+      <section className="wealth-hero" aria-labelledby="home-title">
+        <div className="wrap wealth-hero-grid">
+          <div className="hero-copy">
+            <p className="eyebrow">Durban roots. Your future in focus.</p>
+            <h1 id="home-title">
+              For the life
+              <br />
+              you’re building.
+              <br />
+              <em>And everyone in it.</em>
+            </h1>
+            <p className="hero-intro">
+              The people you love. The income you rely on. The future you imagine. Let’s build a
+              protection plan around what matters to you.
+            </p>
+            <div className="hero-actions">
+              <a href="#review" className="btn btn-gold">
+                Start my free review <ArrowUpRight size={19} />
               </a>
+              <Link to="/services" className="text-link">
+                Explore cover <ArrowRight size={17} />
+              </Link>
             </div>
-            <p className="trustline">
-              <strong>FSP 50739</strong><span className="dot" />
-              <span>Claims in hours</span><span className="dot" />
-              <span>Sanlam · Metropolitan · Emerald Life</span>
+            <p className="hero-assurance">
+              <ShieldCheck size={17} /> FSP 50739 <span>·</span> No obligation <span>·</span>{" "}
+              Personal advice
             </p>
           </div>
-          <div className="hero-art">
-            <svg className="shield" viewBox="0 0 240 280" fill="none" aria-label="Protection shield">
-              <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#143866" /><stop offset="1" stopColor="#0B2545" /></linearGradient></defs>
-              <path d="M120 8 L222 44 V150 C222 214 176 256 120 272 C64 256 18 214 18 150 V44 Z" fill="url(#sg)" stroke="rgba(200,160,74,.4)" strokeWidth="2" />
-              <path d="M58 168 L120 92 L182 168" stroke="#C8A04A" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M82 184 L120 138 L158 184" stroke="#0F7B5A" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
-              <text x="120" y="232" textAnchor="middle" fontFamily="Fraunces,serif" fontSize="20" fill="rgba(255,255,255,.55)" letterSpacing="3">PROTECTED</text>
-            </svg>
-            <div className="badge b1"><span className="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M20 6L9 17l-5-5" /></svg></span>Claims in 4 hours</div>
-            <div className="badge b2"><span className="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z" /></svg></span>Whole-family plans</div>
-          </div>
-        </div>
-      </section>
-
-      <div className="uw" aria-label="Underwriting partners">
-        <div className="wrap">
-          <div className="uw-inner">
-            <p className="uw-label">Cover placed with South Africa's most trusted insurers</p>
-            <div className="uw-logos">
-              <span className="logo sanlam"><svg className="lm" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="#003a70" /><path d="M16 6 L20 14 L28 14 L21.5 19 L24 27 L16 22 L8 27 L10.5 19 L4 14 L12 14 Z" fill="#fdb913" /></svg>Sanlam</span>
-              <span className="logo metro"><svg className="lm" viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="#005baa" /><path d="M7 22 V10 L12 18 L17 10 V22 M21 10 V22 H26" stroke="#fff" strokeWidth="2.4" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>Metropolitan</span>
-              <span className="logo emerald"><svg className="lm" viewBox="0 0 32 32"><path d="M16 3 L28 16 L16 29 L4 16 Z" fill="#0F7B5A" /><path d="M16 9 L23 16 L16 23 L9 16 Z" fill="#13a079" /></svg>Emerald Life</span>
+          <div className="future-panel" aria-label="A protection plan built around your family">
+            <div className="future-top">
+              <span>YOUR NEXT CHAPTER</span>
+              <ArrowUpRight size={22} />
+            </div>
+            <div className="future-orbit" aria-hidden="true">
+              <div className="orbit-ring ring-one" />
+              <div className="orbit-ring ring-two" />
+              <div className="orbit-ring ring-three" />
+              <span className="orbit-word">
+                Life.
+                <br />
+                <i>Well protected.</i>
+              </span>
+            </div>
+            <div className="future-note">
+              <span className="note-icon">
+                <ShieldCheck size={25} />
+              </span>
+              <div>
+                <strong>A plan that grows with you</strong>
+                <p>Family. Income. Health. Tomorrow.</p>
+              </div>
+            </div>
+            <div className="future-bottom">
+              <span>AA WEALTH MANAGEMENT</span>
+              <span>EST. IN KZN</span>
             </div>
           </div>
         </div>
+      </section>
+      <div className="confidence-strip">
+        <div className="wrap">
+          <span>
+            <Check size={17} /> A real Durban advisor
+          </span>
+          <span>
+            <Check size={17} /> Cover explained clearly
+          </span>
+          <span>
+            <Check size={17} /> WhatsApp support
+          </span>
+          <span>
+            <Check size={17} /> Your budget comes first
+          </span>
+        </div>
       </div>
-
-      <section className="sec white">
-        <div className="wrap gap-grid">
-          <div><div className="bignum">R1.6m<span>The average cover shortfall facing a young South African family today.</span></div></div>
-          <div className="gap-card">
-            <p className="eyebrow" style={{ color: "var(--gold-l)" }}>The gap nobody talks about</p>
-            <h2 style={{ color: "#fff", fontSize: "1.85rem", margin: "12px 0 14px" }}>Funeral cover protects the goodbye. What protects everything before it?</h2>
-            <p style={{ color: "rgba(255,255,255,.84)" }}>Take funeral cover out of the picture and fewer than 1 in 5 South Africans have any life cover at all — and more than 8 in 10 working people have nothing to protect them if illness or injury stops their income. <strong style={{ color: "#fff" }}>That's the gap we close.</strong></p>
+      <section className="sec white" aria-labelledby="goals-title">
+        <div className="wrap">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Start with what matters</p>
+              <h2 id="goals-title">What would you like to protect?</h2>
+            </div>
+            <p>
+              No need to know every insurance term.
+              <br />
+              Start with your goal. We’ll help with the detail.
+            </p>
+          </div>
+          <div className="goal-grid">
+            {goals.map(({ title, interest, icon: Icon, text }, i) => (
+              <button key={title} className="goal-card" onClick={() => choose(interest)}>
+                <div className="goal-top">
+                  <Icon size={26} />
+                  <span>0{i + 1}</span>
+                </div>
+                <h3>{title}</h3>
+                <p>{text}</p>
+                <span className="goal-next">
+                  Let’s explore <ArrowUpRight size={19} />
+                </span>
+              </button>
+            ))}
           </div>
         </div>
       </section>
-
       <section className="sec ivory">
-        <div className="wrap head-c">
-          <p className="eyebrow">The AA Wealth way</p>
-          <h2>One advisor. One complete plan. Built around your family.</h2>
-          <p className="lead center">We start where you are — usually funeral cover — and build outward into a plan that actually protects your life: your income, your health, your loved ones, and your future. No jargon, no pressure, no call-centre script.</p>
+        <div className="wrap advice-grid">
+          <div>
+            <p className="eyebrow">More than a policy</p>
+            <h2>
+              Good cover starts
+              <br />
+              with a conversation.
+            </h2>
+            <p className="lead">
+              You shouldn’t have to work out your family’s protection alone. We help you understand
+              what you have, what you need and what fits your budget.
+            </p>
+            <Link to="/about" className="text-link">
+              Meet AA Wealth <ArrowUpRight size={18} />
+            </Link>
+          </div>
+          <div className="advice-list">
+            {[
+              [
+                "01",
+                "Tell us about your life",
+                "Your family, your priorities and your existing cover. We start by listening.",
+              ],
+              [
+                "02",
+                "Understand your options",
+                "An advisor explains suitable options, premiums, exclusions and waiting periods.",
+              ],
+              [
+                "03",
+                "Decide with confidence",
+                "Ask your questions before applying. Cover begins only once your insurer confirms acceptance and the policy start date.",
+              ],
+            ].map(([n, title, text]) => (
+              <div className="advice-item" key={n}>
+                <span>{n}</span>
+                <div>
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
-
       <section className="sec white">
         <div className="wrap">
-          <div className="head-c"><p className="eyebrow">What we cover</p><h2>Everything your family needs, in one place</h2></div>
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Your protection, connected</p>
+              <h2>Different needs. One place to start.</h2>
+            </div>
+            <Link to="/services" className="text-link">
+              All cover options <ArrowUpRight size={18} />
+            </Link>
+          </div>
           <CoverGrid />
         </div>
       </section>
-
+      <section className="sec ivory" id="review">
+        <div className="wrap formwrap">
+          <div>
+            <p className="eyebrow">Take the first step</p>
+            <h2 className="review-title">
+              A little clarity today.
+              <br />
+              <em>A more secure tomorrow.</em>
+            </h2>
+            <p className="lead">
+              Tell us what’s on your mind. Prepare your enquiry, then send it directly to an AA
+              Wealth advisor on WhatsApp.
+            </p>
+            <ul className="review-checks">
+              <li>
+                <Check size={18} /> Free initial protection review
+              </li>
+              <li>
+                <Check size={18} /> No obligation to buy a policy
+              </li>
+              <li>
+                <Check size={18} /> No ID or medical details needed here
+              </li>
+            </ul>
+            <p className="small-note">
+              Already have cover? Bring your policy details to your advisor. Review any changes
+              before cancelling an existing policy.
+            </p>
+          </div>
+          <LeadForm defaultInterest={interest} />
+        </div>
+      </section>
       <section className="sec white">
-        <div className="wrap">
-          <div className="head-c"><p className="eyebrow">Peace of mind</p><h2>Real families. Real peace of mind.</h2></div>
-          <div className="tcards">
+        <div className="wrap question-grid">
+          <div>
+            <p className="eyebrow">A few helpful answers</p>
+            <h2>Before we talk.</h2>
+            <Link to="/faq" className="text-link">
+              More questions <ArrowUpRight size={18} />
+            </Link>
+          </div>
+          <div className="home-questions">
             {[
-              { q: "AA Wealth showed me my work cover left a huge gap. Sorted in a day, all on WhatsApp.", who: "Nomvula · Umlazi" },
-              { q: "They paid my mother's funeral claim in hours. I'll never go anywhere else.", who: "Sipho · Pinetown" },
-              { q: "More than insurance — they actually built me a plan for my family's future.", who: "Reshma · Durban North" },
-            ].map((t) => (
-              <figure key={t.who} className="t">
-                <div className="q" aria-hidden="true">“</div>
-                <div className="stars">★★★★★</div>
-                <blockquote><p>{t.q}</p></blockquote>
-                <figcaption className="who">{t.who}</figcaption>
-              </figure>
+              [
+                "Is life cover the same as funeral cover?",
+                "They serve different needs. Funeral cover generally helps with funeral costs; life cover can help dependants with longer-term financial needs. Benefits and conditions depend on the policy.",
+              ],
+              [
+                "Will I get an instant premium here?",
+                "No. This is an enquiry for an advisor review. A personalised quote depends on the product, your needs and the insurer’s assessment.",
+              ],
+              [
+                "What happens after I send my enquiry?",
+                "Your message goes to AA Wealth on WhatsApp when you press Send in WhatsApp. An advisor can then discuss your needs and the next steps during business hours.",
+              ],
+            ].map(([q, a]) => (
+              <details key={q}>
+                <summary>{q}</summary>
+                <p>{a}</p>
+              </details>
             ))}
           </div>
         </div>

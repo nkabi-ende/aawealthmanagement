@@ -24,8 +24,20 @@ function BrandMark() {
   return (
     <svg className="mark" viewBox="0 0 48 48" fill="none" aria-hidden="true">
       <rect width="48" height="48" rx="12" fill="#0B2545" />
-      <path d="M9 33 L24 13 L39 33" stroke="#C8A04A" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M15 35.5 L24 23 L33 35.5" stroke="#0F7B5A" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M9 33 L24 13 L39 33"
+        stroke="#C8A04A"
+        strokeWidth="3.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M15 35.5 L24 23 L33 35.5"
+        stroke="#0F7B5A"
+        strokeWidth="3.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -49,6 +61,9 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
 
   return (
     <>
+      <a href="#main" className="skip-link">
+        Skip to content
+      </a>
       <header className={`site${scrolled ? " scrolled" : ""}`}>
         <div className="wrap nav">
           <Link to="/" className="brand" aria-label="AA Wealth Management — home">
@@ -81,23 +96,32 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
             </a>
             <button
               className="burger"
-              aria-label="Open menu"
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-controls="mobile-navigation"
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
             >
-              <span /><span /><span />
+              <span />
+              <span />
+              <span />
             </button>
           </div>
         </div>
       </header>
-      <div className={`mobile-menu${open ? " open" : ""}`}>
+      <div id="mobile-navigation" hidden={!open} className={`mobile-menu${open ? " open" : ""}`}>
         {NAV.map((n) => (
-          <Link key={n.to} to={n.to}>{n.label}</Link>
+          <Link key={n.to} to={n.to}>
+            {n.label}
+          </Link>
         ))}
-        <Link to="/contact" className="btn btn-gold">Get my free review</Link>
+        <Link to="/contact" className="btn btn-gold">
+          Get my free review
+        </Link>
       </div>
 
-      <main id="main">{children}</main>
+      <main id="main" tabIndex={-1}>
+        {children}
+      </main>
 
       <FinalCta />
       <SiteFooter />
@@ -106,7 +130,9 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
         <WaIcon size={30} />
       </a>
       <div className="mbar">
-        <Link to="/contact" className="btn btn-gold">Free review</Link>
+        <Link to="/contact" className="btn btn-gold">
+          Free review
+        </Link>
         <a href={WA_URL} className="btn btn-green">
           <WaIcon size={18} /> WhatsApp
         </a>
@@ -119,11 +145,18 @@ function FinalCta() {
   return (
     <section className="finalcta" aria-labelledby="finh">
       <div className="wrap">
-        <h2 id="finh">Find out what your family is missing — free.</h2>
-        <p>A 15-minute review with a licensed Durban advisor. No cost. No obligation.</p>
+        <h2 id="finh">Your next chapter deserves a plan.</h2>
+        <p>
+          Start with a free protection review. Personal guidance from a Durban advisor, with no
+          obligation to buy.
+        </p>
         <div className="row">
-          <Link to="/contact" className="btn btn-gold">Get my free protection review</Link>
-          <a href={WA_URL} className="btn btn-ghost on-dark">WhatsApp us now</a>
+          <Link to="/contact" className="btn btn-gold">
+            Get my free protection review
+          </Link>
+          <a href={WA_URL} className="btn btn-ghost on-dark">
+            WhatsApp us now
+          </a>
         </div>
       </div>
     </section>
@@ -136,17 +169,18 @@ function SiteFooter() {
       <div className="wrap">
         <div className="foot-grid">
           <div>
-            <Link to="/" className="brand"><BrandMark /></Link>
+            <Link to="/" className="brand">
+              <BrandMark />
+            </Link>
             <p className="name">AA Wealth</p>
             <p style={{ maxWidth: 320 }}>
               Protect today. Build tomorrow. Complete family protection for KZN — funeral, life,
               income, illness and savings.
             </p>
             <div className="socials">
-              <a href="#" aria-label="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 10-11.5 9.9v-7H8v-2.9h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9H16l-.4 2.9h-2.1v7A10 10 0 0022 12z"/></svg></a>
-              <a href="#" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
-              <a href="#" aria-label="TikTok"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 3a5 5 0 005 5v3a8 8 0 01-5-1.7V15a6 6 0 11-6-6v3a3 3 0 103 3V3z"/></svg></a>
-              <a href={WA_URL} aria-label="WhatsApp"><WaIcon size={18} /></a>
+              <a href={WA_URL} aria-label="WhatsApp">
+                <WaIcon size={18} />
+              </a>
             </div>
           </div>
           <nav aria-label="Cover links">
@@ -163,7 +197,8 @@ function SiteFooter() {
             <a href={WA_URL}>WhatsApp us</a>
             <a href="mailto:hello@aawealth.co.za">hello@aawealth.co.za</a>
             <address style={{ fontStyle: "normal", color: "rgba(255,255,255,.7)", marginTop: 9 }}>
-              Durban, KwaZulu-Natal<br />
+              Durban, KwaZulu-Natal
+              <br />
               Mon–Fri 8:00–17:00 · Sat 9:00–13:00
             </address>
           </div>

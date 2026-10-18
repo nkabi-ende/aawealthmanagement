@@ -72,21 +72,36 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { title: "AA Wealth | Insurance Broker in Durban, KZN — Funeral, Life & Income Cover" },
-      { name: "description", content: "AA Wealth is a licensed Durban insurance brokerage (FSP 50739) building complete family protection plans — funeral, life, income protection, critical illness & savings." },
+      { title: "AA Wealth Management | Protect the Life You’re Building" },
+      {
+        name: "description",
+        content:
+          "Life cover, funeral cover and income protection, explained by a Durban advisor. Start a free protection review with AA Wealth Management. FSP 50739.",
+      },
       { name: "author", content: "AA Wealth Management" },
       { name: "theme-color", content: "#0B2545" },
-      { property: "og:title", content: "AA Wealth | Insurance Broker in Durban, KZN — Funeral, Life & Income Cover" },
-      { property: "og:description", content: "AA Wealth is a licensed Durban insurance brokerage (FSP 50739) building complete family protection plans — funeral, life, income protection, critical illness & savings." },
+      { property: "og:title", content: "AA Wealth Management | Protect the Life You’re Building" },
+      {
+        property: "og:description",
+        content:
+          "Life cover, funeral cover and income protection, explained by a Durban advisor. Start a free protection review with AA Wealth Management. FSP 50739.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://aawealthmanagement.co.za" },
       { property: "og:image", content: "https://aawealthmanagement.co.za/og-image.png" },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
-      { property: "og:image:alt", content: "AA Wealth Management — Protect today. Build tomorrow." },
+      {
+        property: "og:image:alt",
+        content: "AA Wealth Management — Protect today. Build tomorrow.",
+      },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "AA Wealth | Insurance Broker in Durban, KZN — Funeral, Life & Income Cover" },
-      { name: "twitter:description", content: "AA Wealth is a licensed Durban insurance brokerage (FSP 50739) building complete family protection plans — funeral, life, income protection, critical illness & savings." },
+      { name: "twitter:title", content: "AA Wealth Management | Protect the Life You’re Building" },
+      {
+        name: "twitter:description",
+        content:
+          "Life cover, funeral cover and income protection, explained by a Durban advisor. Start a free protection review with AA Wealth Management. FSP 50739.",
+      },
       { name: "twitter:image", content: "https://aawealthmanagement.co.za/og-image.png" },
     ],
     links: [
