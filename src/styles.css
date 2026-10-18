@@ -2223,3 +2223,282 @@ header.site {
     display: none;
   }
 }
+/* AA Wealth signature opening: the two brand peaks draw into a protective orbit. */
+.aa-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #081c32;
+  color: #f6f2e9;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    opacity 0.45s ease,
+    visibility 0.45s ease;
+  padding: 32px;
+}
+.aa-preloader::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 50% 42%, #17483e55, transparent 48%),
+    linear-gradient(115deg, transparent 47%, #c8a04a06 48%, transparent 50%);
+}
+.aa-preloader.is-leaving {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.aa-intro-corner {
+  position: absolute;
+  top: max(30px, env(safe-area-inset-top));
+  left: 34px;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: #b8c5c8;
+}
+.aa-intro-corner > span {
+  color: var(--gold-l);
+  margin-right: 12px;
+  font-size: 17px;
+  font-family: var(--serif);
+}
+.aa-intro-skip {
+  position: absolute;
+  top: max(28px, env(safe-area-inset-top));
+  right: 34px;
+  background: none;
+  border: 1px solid #ffffff30;
+  border-radius: 30px;
+  color: #e4dcca;
+  padding: 10px 15px;
+  font-family: var(--sans);
+  font-size: 11px;
+  cursor: pointer;
+  min-height: 44px;
+}
+.aa-intro-skip span {
+  margin-left: 14px;
+}
+.aa-intro-centre {
+  text-align: center;
+}
+.aa-intro-emblem {
+  position: relative;
+  width: 220px;
+  height: 190px;
+  margin: 0 auto 20px;
+  display: grid;
+  place-items: center;
+}
+.aa-intro-emblem .mark {
+  width: 110px;
+  height: 110px;
+  position: relative;
+  z-index: 2;
+  overflow: visible;
+  filter: drop-shadow(0 0 22px #c8a04a17);
+}
+.aa-intro-emblem .mark rect {
+  fill: transparent;
+}
+.aa-intro-emblem .mark path {
+  stroke-dasharray: 65;
+  stroke-dashoffset: 65;
+  animation: aa-brand-draw 1s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards;
+}
+.aa-intro-emblem .mark path:last-child {
+  animation-delay: 0.4s;
+}
+.aa-intro-orbit {
+  position: absolute;
+  width: 210px;
+  height: 155px;
+  border: 1px solid #c8a04a44;
+  border-radius: 50%;
+  transform: rotate(-35deg);
+  animation: aa-orbit-in 1.4s ease both;
+}
+.aa-intro-orbit.orbit-b {
+  width: 158px;
+  height: 204px;
+  border-color: #4eaa8740;
+  transform: rotate(-35deg);
+  animation-delay: 0.15s;
+}
+.aa-intro-halo {
+  position: absolute;
+  inset: 25px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #c8a04a0b, transparent 68%);
+  animation: aa-halo 1.8s ease both;
+}
+.aa-orbit-spark {
+  position: absolute;
+  right: 31px;
+  top: 25px;
+  width: 5px;
+  height: 5px;
+  background: var(--gold-l);
+  border-radius: 50%;
+  box-shadow: 0 0 15px var(--gold-l);
+  animation: aa-intro-rise 1s 0.65s both;
+}
+.aa-intro-wordmark {
+  animation: aa-intro-rise 0.7s 0.45s both;
+}
+.aa-intro-name {
+  display: block;
+  font-family: var(--serif);
+  font-size: clamp(30px, 7vw, 44px);
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+.aa-intro-management {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.4em;
+  color: var(--gold-l);
+  margin: 9px 0 25px;
+  padding-left: 0.4em;
+}
+.aa-intro-tagline {
+  font-family: var(--serif);
+  font-size: clamp(22px, 5vw, 29px);
+  line-height: 1.3;
+  animation: aa-intro-rise 0.7s 0.85s both;
+}
+.aa-intro-tagline em {
+  color: var(--gold-l);
+  font-weight: 400;
+}
+.aa-intro-rule {
+  width: 62px;
+  height: 1px;
+  background: #ffffff20;
+  margin: 27px auto 0;
+  overflow: hidden;
+}
+.aa-intro-rule span {
+  display: block;
+  height: 100%;
+  background: var(--gold-l);
+  transform-origin: left;
+  animation: aa-intro-line 2s ease forwards;
+}
+.aa-intro-bottom {
+  position: absolute;
+  bottom: max(28px, env(safe-area-inset-bottom));
+  left: 34px;
+  right: 34px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  color: #96aaa9;
+}
+@keyframes aa-brand-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes aa-intro-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes aa-orbit-in {
+  from {
+    opacity: 0;
+    scale: 0.8;
+    rotate: -20deg;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+    rotate: 0deg;
+  }
+}
+@keyframes aa-halo {
+  from {
+    opacity: 0;
+    scale: 0.6;
+  }
+  to {
+    opacity: 1;
+    scale: 1.3;
+  }
+}
+@keyframes aa-intro-line {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@media (max-width: 560px) {
+  .aa-intro-corner {
+    left: 22px;
+    font-size: 7px;
+    max-width: 185px;
+  }
+  .aa-intro-corner > span {
+    display: block;
+    margin-bottom: 4px;
+  }
+  .aa-intro-skip {
+    right: 20px;
+    font-size: 10px;
+    padding: 8px 12px;
+  }
+  .aa-intro-bottom {
+    left: 22px;
+    right: 22px;
+    bottom: max(22px, env(safe-area-inset-bottom));
+    font-size: 6px;
+    letter-spacing: 0.1em;
+  }
+  .aa-intro-emblem {
+    margin-bottom: 16px;
+  }
+}
+@media (max-height: 590px) {
+  .aa-intro-emblem {
+    height: 120px;
+    scale: 0.7;
+    margin-bottom: 0;
+  }
+  .aa-intro-name {
+    font-size: 28px;
+  }
+  .aa-intro-management {
+    margin-bottom: 12px;
+  }
+  .aa-intro-tagline {
+    font-size: 21px;
+  }
+  .aa-intro-rule {
+    margin-top: 15px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aa-preloader,
+  .aa-preloader * {
+    animation: none !important;
+    transition: none !important;
+  }
+  .aa-intro-emblem .mark path {
+    stroke-dashoffset: 0;
+  }
+}

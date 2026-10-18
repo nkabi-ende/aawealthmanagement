@@ -1,3 +1,4 @@
+import BrandPreloader from "@/components/BrandPreloader";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -144,7 +145,10 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <BrandPreloader />
+      <div id="aa-site-content">
+        <Outlet />
+      </div>
     </QueryClientProvider>
   );
 }
