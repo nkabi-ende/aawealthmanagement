@@ -71,35 +71,36 @@ function Home() {
               Personal advice
             </p>
           </div>
-          <div className="future-panel" aria-label="A protection plan built around your family">
-            <div className="future-top">
-              <span>YOUR NEXT CHAPTER</span>
-              <ArrowUpRight size={22} />
-            </div>
-            <div className="future-orbit" aria-hidden="true">
-              <div className="orbit-ring ring-one" />
-              <div className="orbit-ring ring-two" />
-              <div className="orbit-ring ring-three" />
-              <span className="orbit-word">
-                Life.
-                <br />
-                <i>Well protected.</i>
-              </span>
-            </div>
-            <div className="future-note">
-              <span className="note-icon">
-                <ShieldCheck size={25} />
+          <figure className="family-hero-portrait">
+            <picture>
+              <source
+                type="image/webp"
+                srcSet="/images/aa-family-640.webp 640w, /images/aa-family-1280.webp 1280w"
+                sizes="(max-width: 650px) calc(100vw - 36px), 50vw"
+              />
+              <img
+                src="/images/aa-family-1280.webp"
+                alt="Illustrative portrait of smiling Black South African parents, grandparents, a son and a daughter together in a garden"
+                width="1280"
+                height="853"
+                fetchPriority="high"
+                decoding="async"
+              />
+            </picture>
+            <figcaption>
+              <span className="family-caption-icon">
+                <ShieldCheck size={22} />
               </span>
               <div>
-                <strong>A plan that grows with you</strong>
-                <p>Family. Income. Health. Tomorrow.</p>
+                <strong>
+                  Every generation.
+                  <br />
+                  <em>One shared future.</em>
+                </strong>
+                <span>Protection for the people you love.</span>
               </div>
-            </div>
-            <div className="future-bottom">
-              <span>AA WEALTH MANAGEMENT</span>
-              <span>EST. IN KZN</span>
-            </div>
-          </div>
+            </figcaption>
+          </figure>
         </div>
       </section>
       <div className="confidence-strip">

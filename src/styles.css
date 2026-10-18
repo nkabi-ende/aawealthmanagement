@@ -2758,3 +2758,103 @@ header.site {
     animation: none;
   }
 }
+/* Warm family portrait and product-specific lifestyle photography. */
+.family-hero-portrait {
+  position: relative;
+  margin: 0;
+  border-radius: 100px 100px 12px 12px;
+  overflow: hidden;
+  background: #173d35;
+  box-shadow: 0 20px 55px #0b25451a;
+}
+.family-hero-portrait picture {
+  display: block;
+}
+.family-hero-portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1.5;
+  object-fit: cover;
+}
+.family-hero-portrait figcaption {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 24px 27px;
+  color: #fff;
+}
+.family-caption-icon {
+  flex: none;
+  color: var(--gold-l);
+  width: 46px;
+  height: 46px;
+  border: 1px solid #e4c27750;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.family-hero-portrait strong {
+  display: block;
+  font-family: var(--serif);
+  font-size: 1.65rem;
+  font-weight: 500;
+  line-height: 1.12;
+}
+.family-hero-portrait strong em {
+  color: var(--gold-l);
+  font-weight: 400;
+}
+.family-hero-portrait figcaption div > span {
+  display: block;
+  color: #e3e8e0;
+  font-size: 0.73rem;
+  margin-top: 9px;
+}
+.card .product-photo {
+  display: block;
+  flex: none;
+  width: calc(100% + 48px);
+  max-width: none;
+  aspect-ratio: 1.7;
+  height: auto;
+  object-fit: cover;
+  margin: -24px -24px 21px;
+  border-radius: 9px 9px 0 0;
+}
+.card.feature {
+  padding-top: 24px;
+}
+.card .ribbon {
+  z-index: 1;
+  box-shadow: 0 2px 12px #0002;
+}
+.card .ic {
+  margin-bottom: 13px;
+}
+.card.cta-card {
+  min-height: 280px;
+}
+@media (max-width: 650px) {
+  .family-hero-portrait {
+    border-radius: 50px 50px 9px 9px;
+    max-width: 500px;
+    margin: auto;
+  }
+  .family-hero-portrait figcaption {
+    padding: 20px 22px;
+  }
+  .family-hero-portrait strong {
+    font-size: 1.55rem;
+  }
+  .card .product-photo {
+    width: calc(100% + 46px);
+    margin: -23px -23px 20px;
+  }
+  .card.feature {
+    padding-top: 23px;
+  }
+  .family-hero-portrait img {
+    aspect-ratio: 1.5;
+  }
+}

@@ -151,11 +151,54 @@ const ITEMS: Item[] = [
   },
 ];
 
+const PRODUCT_VISUALS: Record<string, { src: string; alt: string }> = {
+  "Funeral Cover": {
+    src: "family",
+    alt: "Illustrative multigenerational South African family together in a garden",
+  },
+  "Advanced Pensioners Funeral Plan": {
+    src: "seniors",
+    alt: "Illustrative portrait of a smiling older South African couple on a garden patio",
+  },
+  "Life Cover": {
+    src: "family",
+    alt: "Illustrative parents, children and grandparents enjoying family time",
+  },
+  "Income Protection": {
+    src: "income",
+    alt: "Illustrative South African small-business owner working in her studio",
+  },
+  "Critical Illness": {
+    src: "health",
+    alt: "Illustrative reassuring conversation between a woman and a healthcare professional",
+  },
+  "Disability Cover": {
+    src: "health",
+    alt: "Illustrative consultation about health and support needs",
+  },
+  "Savings & Retirement": {
+    src: "planning",
+    alt: "Illustrative couple planning their financial future together at home",
+  },
+  "Group & Stokvel": {
+    src: "group",
+    alt: "Illustrative South African community members at a garden-table group meeting",
+  },
+};
 export default function CoverGrid() {
   return (
     <div className="grid cards7">
       {ITEMS.map((it) => (
         <article key={it.title} className={`card${it.feature ? " feature" : ""}`}>
+          <img
+            className="product-photo"
+            src={"/images/aa-" + PRODUCT_VISUALS[it.title].src + "-640.webp"}
+            alt={PRODUCT_VISUALS[it.title].alt}
+            width="640"
+            height="427"
+            loading="lazy"
+            decoding="async"
+          />
           {it.ribbon && <div className="ribbon">{it.ribbon}</div>}
           <div className="ic">{it.icon}</div>
           <h3>{it.title}</h3>
