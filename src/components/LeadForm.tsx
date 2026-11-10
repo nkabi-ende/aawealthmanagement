@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import IntakeVerification from "./IntakeVerification";
 import { ArrowUpRight, ArrowLeft, Check, ShieldCheck } from "lucide-react";
 import {
   COVER_OPTIONS,
@@ -7,6 +8,9 @@ import {
   type IntakeData,
 } from "@/lib/intake";
 
+const intakeEndpoint = import.meta.env.VITE_ZOHO_INTAKE_URL as string | undefined;
+const turnstileSitekey = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined;
+const onlineIntake = Boolean(intakeEndpoint && turnstileSitekey);
 const STEPS = ["Your cover", "Your needs", "Your details", "Review"];
 export default function LeadForm({
   defaultInterest = "Life cover",
@@ -19,6 +23,12 @@ export default function LeadForm({
   const heading = useRef<HTMLHeadingElement>(null);
   const [step, setStep] = useState(0);
   const [ready, setReady] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
+  const [reference, setReference] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [verifyVersion, setVerifyVersion] = useState(0);
+  const submission = useRef<{ payload: string; reference: string } | null>(null);
   const [data, setData] = useState<IntakeData>({
     cover: defaultInterest,
     answers: {},
@@ -57,10 +67,51 @@ export default function LeadForm({
     }, 0);
   };
   const message = formatIntakeMessage(data);
-  const formSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const formSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (step < reviewStep) move(step + 1);
-    else setReady(true);
+    if (saving) return;
+    if (step < reviewStep) {
+      move(step + 1);
+      return;
+    }
+    if (!onlineIntake) {
+      setReady(true);
+      return;
+    }
+    if (!turnstileToken) {
+      setSaveError("Please complete the security verification.");
+      return;
+    }
+    setSaving(true);
+    setSaveError("");
+    const payload = JSON.stringify(data);
+    if (!submission.current || submission.current.payload !== payload)
+      submission.current = { payload, reference: "AA-" + crypto.randomUUID() };
+    try {
+      const response = await fetch(intakeEndpoint!, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data, reference: submission.current.reference, turnstileToken }),
+        signal: AbortSignal.timeout(20000),
+      });
+      const result = await response.json();
+      if (
+        !response.ok ||
+        result.reference !== submission.current.reference ||
+        !["queued", "saved", "review"].includes(result.state)
+      )
+        throw new Error("Submission not confirmed");
+      setReference(result.reference);
+      setReady(true);
+    } catch {
+      setSaveError(
+        "We could not confirm online receipt. Please retry, or send your enquiry using WhatsApp below.",
+      );
+      setTurnstileToken("");
+      setVerifyVersion((v) => v + 1);
+    } finally {
+      setSaving(false);
+    }
   };
   return (
     <div className="formcard enquiry-card guided-intake">
@@ -88,7 +139,11 @@ export default function LeadForm({
             "What matters to you?",
             "A little about your needs.",
             "How can we reach you?",
-            ready ? "Your enquiry is ready." : "Does everything look right?",
+            ready
+              ? onlineIntake
+                ? "Your enquiry has been received."
+                : "Your enquiry is ready."
+              : "Does everything look right?",
           ][phase]
         }
       </h3>
@@ -99,282 +154,317 @@ export default function LeadForm({
             "A starting point for your advisor—not a quote or an application.",
             "Only the details needed to start a useful conversation.",
             ready
-              ? "Open WhatsApp and press Send to share your enquiry. It has not been submitted online."
-              : "Review your answers before preparing your message.",
+              ? onlineIntake
+                ? "Your enquiry is saved for advisor follow-up. You can also continue on WhatsApp."
+                : "Open WhatsApp and press Send to share your enquiry. It has not been submitted online."
+              : onlineIntake
+                ? "Review your answers before submitting your enquiry."
+                : "Review your answers before preparing your message.",
           ][phase]
         }
       </p>
-      <form onSubmit={formSubmit}>
-        {step === 0 && (
-          <fieldset className="intake-fieldset">
-            <legend className="sr-only">Choose the cover you are interested in</legend>
-            <div className="intake-cover-options">
-              {COVER_OPTIONS.map((cover) => (
-                <label key={cover} className={data.cover === cover ? "selected" : ""}>
-                  <input
-                    type="radio"
-                    name={id + "-cover"}
-                    checked={data.cover === cover}
-                    onChange={() => setData((d) => ({ ...d, cover, answers: {} }))}
-                    required
-                  />
-                  <span>{cover}</span>
-                </label>
-              ))}
-            </div>
-            <p className="small-note">
-              You can change this later. No payment or identity documents required.
-            </p>
-          </fieldset>
-        )}
-        {phase === 1 && (
-          <fieldset className="intake-fieldset">
-            <legend className="intake-selection">
-              {data.cover} · Question {step} of {questions.length}
-            </legend>
-            {questions.slice(step - 1, step).map((q) => (
-              <div className="field" key={q.key}>
-                <label htmlFor={id + q.key}>{q.label}</label>
-                <select
-                  id={id + q.key}
-                  required
-                  value={data.answers[q.key] || ""}
-                  onChange={(e) => update("answers", { ...data.answers, [q.key]: e.target.value })}
-                >
-                  <option value="" disabled>
-                    Select an option
-                  </option>
-                  {q.options.map((o) => (
-                    <option key={o}>{o}</option>
-                  ))}
-                </select>
-                {q.hint && <p className="field-hint">{q.hint}</p>}
+      <form onSubmit={formSubmit} aria-busy={saving}>
+        <fieldset disabled={saving} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
+          {step === 0 && (
+            <fieldset className="intake-fieldset">
+              <legend className="sr-only">Choose the cover you are interested in</legend>
+              <div className="intake-cover-options">
+                {COVER_OPTIONS.map((cover) => (
+                  <label key={cover} className={data.cover === cover ? "selected" : ""}>
+                    <input
+                      type="radio"
+                      name={id + "-cover"}
+                      checked={data.cover === cover}
+                      onChange={() => setData((d) => ({ ...d, cover, answers: {} }))}
+                      required
+                    />
+                    <span>{cover}</span>
+                  </label>
+                ))}
               </div>
-            ))}
-            <div className="intake-notice">
-              <ShieldCheck size={18} />
-              <p>
-                We’ll discuss detailed medical and policy information securely with you later.
-                Please don’t provide it here.
+              <p className="small-note">
+                You can change this later. No payment or identity documents required.
               </p>
-            </div>
-          </fieldset>
-        )}
-        {step === contactStep && (
-          <fieldset className="intake-fieldset">
-            <legend className="sr-only">Your contact details</legend>
-            <div className="field">
-              <label htmlFor={id + "-name"}>Full name</label>
-              <input
-                id={id + "-name"}
-                required
-                value={data.name}
-                onChange={(e) => update("name", e.target.value)}
-                maxLength={100}
-                autoComplete="name"
-                placeholder="Name and surname"
-                pattern=".*\S.*"
-              />
-            </div>
-            <div className="field">
-              <label htmlFor={id + "-phone"}>South African mobile number</label>
-              <input
-                id={id + "-phone"}
-                required
-                value={data.phone}
-                onChange={(e) => update("phone", e.target.value)}
-                type="tel"
-                inputMode="tel"
-                autoComplete="tel"
-                pattern="(?:0|\+?27)\s?[6-8](?:\s?[0-9]){8}"
-                maxLength={16}
-                placeholder="082 123 4567"
-                title="Use an SA mobile number, for example 082 123 4567 or +27 82 123 4567"
-              />
-            </div>
-            <div className="field">
-              <label htmlFor={id + "-email"}>
-                Email address <span className="optional">(optional)</span>
-              </label>
-              <input
-                id={id + "-email"}
-                type="email"
-                value={data.email}
-                onChange={(e) => update("email", e.target.value)}
-                maxLength={160}
-                autoComplete="email"
-                placeholder="you@example.com"
-              />
-            </div>
-            <details className="intake-extra">
-              <summary>Add location & callback preferences (optional)</summary>
-              <div className="field">
-                <label htmlFor={id + "-province"}>Province</label>
-                <select
-                  id={id + "-province"}
-                  value={data.province}
-                  onChange={(e) => update("province", e.target.value)}
-                >
-                  {[
-                    "KwaZulu-Natal",
-                    "Gauteng",
-                    "Western Cape",
-                    "Eastern Cape",
-                    "Free State",
-                    "Limpopo",
-                    "Mpumalanga",
-                    "North West",
-                    "Northern Cape",
-                  ].map((p) => (
-                    <option key={p}>{p}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="row2">
-                <div className="field">
-                  <label htmlFor={id + "-preference"}>Contact me by</label>
+            </fieldset>
+          )}
+          {phase === 1 && (
+            <fieldset className="intake-fieldset">
+              <legend className="intake-selection">
+                {data.cover} · Question {step} of {questions.length}
+              </legend>
+              {questions.slice(step - 1, step).map((q) => (
+                <div className="field" key={q.key}>
+                  <label htmlFor={id + q.key}>{q.label}</label>
                   <select
-                    id={id + "-preference"}
-                    value={data.preference}
-                    onChange={(e) => update("preference", e.target.value)}
+                    id={id + q.key}
+                    required
+                    value={data.answers[q.key] || ""}
+                    onChange={(e) =>
+                      update("answers", { ...data.answers, [q.key]: e.target.value })
+                    }
                   >
-                    <option>WhatsApp</option>
-                    <option>Phone call</option>
-                  </select>
-                </div>
-                <div className="field">
-                  <label htmlFor={id + "-time"}>Preferred time</label>
-                  <select
-                    id={id + "-time"}
-                    value={data.contactTime}
-                    onChange={(e) => update("contactTime", e.target.value)}
-                  >
-                    {[
-                      "Any business-hour time",
-                      "Morning (08:00–12:00)",
-                      "Afternoon (12:00–17:00)",
-                    ].map((o) => (
+                    <option value="" disabled>
+                      Select an option
+                    </option>
+                    {q.options.map((o) => (
                       <option key={o}>{o}</option>
                     ))}
                   </select>
+                  {q.hint && <p className="field-hint">{q.hint}</p>}
                 </div>
-              </div>
-            </details>
-            <p className="small-note">
-              Times are South African time. We’ll arrange a suitable slot with you.
-            </p>
-          </fieldset>
-        )}
-        {step === reviewStep && (
-          <>
-            <div className="intake-review">
-              <div className="review-group">
-                <div className="review-group-head">
-                  <strong>Your cover and needs</strong>
-                  <button type="button" onClick={() => move(0)}>
-                    Edit cover
-                  </button>
-                </div>
-                <p>{data.cover}</p>
-                <dl>
-                  {questions.map((q) => (
-                    <div key={q.key}>
-                      <dt>{q.label}</dt>
-                      <dd>{data.answers[q.key] || "Not provided"}</dd>
-                    </div>
-                  ))}
-                </dl>
-                <button type="button" className="text-link" onClick={() => move(1)}>
-                  Edit needs
-                </button>
-              </div>
-              <div className="review-group">
-                <div className="review-group-head">
-                  <strong>Contact details</strong>
-                  <button type="button" onClick={() => move(contactStep)}>
-                    Edit
-                  </button>
-                </div>
+              ))}
+              <div className="intake-notice">
+                <ShieldCheck size={18} />
                 <p>
-                  {data.name}
-                  <br />
-                  {data.phone}
-                  {data.email && (
-                    <>
-                      <br />
-                      {data.email}
-                    </>
-                  )}
-                  <br />
-                  {data.province}
-                </p>
-                <p>
-                  {data.preference} · {data.contactTime}
+                  We’ll discuss detailed medical and policy information securely with you later.
+                  Please don’t provide it here.
                 </p>
               </div>
-            </div>
-            {!ready && (
-              <label className="consent">
+            </fieldset>
+          )}
+          {step === contactStep && (
+            <fieldset className="intake-fieldset">
+              <legend className="sr-only">Your contact details</legend>
+              <div className="field">
+                <label htmlFor={id + "-name"}>Full name</label>
                 <input
-                  type="checkbox"
+                  id={id + "-name"}
                   required
-                  checked={data.consent}
-                  onChange={(e) => update("consent", e.target.checked)}
+                  value={data.name}
+                  onChange={(e) => update("name", e.target.value)}
+                  maxLength={100}
+                  autoComplete="name"
+                  placeholder="Name and surname"
+                  pattern=".*\S.*"
                 />
-                I agree that AA Wealth may contact me about this enquiry and use these details to
-                assess my needs and arrange advisor follow-up. This is not consent to unrelated
-                marketing.
-              </label>
-            )}
-            <details className="privacy-note">
-              <summary>How your details are used</summary>
-              <p>
-                Your answers stay in this page’s memory until you send them. They are not saved to a
-                website database. Sending by WhatsApp or email shares them with AA Wealth and the
-                chosen messaging provider. AA Wealth uses them to handle this enquiry. Contact
-                hello@aawealth.co.za about access, correction or deletion. Do not include identity
-                documents or medical records.
+              </div>
+              <div className="field">
+                <label htmlFor={id + "-phone"}>South African mobile number</label>
+                <input
+                  id={id + "-phone"}
+                  required
+                  value={data.phone}
+                  onChange={(e) => update("phone", e.target.value)}
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  pattern="(?:0|\+?27)\s?[6-8](?:\s?[0-9]){8}"
+                  maxLength={16}
+                  placeholder="082 123 4567"
+                  title="Use an SA mobile number, for example 082 123 4567 or +27 82 123 4567"
+                />
+              </div>
+              <div className="field">
+                <label htmlFor={id + "-email"}>
+                  Email address <span className="optional">(optional)</span>
+                </label>
+                <input
+                  id={id + "-email"}
+                  type="email"
+                  value={data.email}
+                  onChange={(e) => update("email", e.target.value)}
+                  maxLength={100}
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                />
+              </div>
+              <details className="intake-extra">
+                <summary>Add location & callback preferences (optional)</summary>
+                <div className="field">
+                  <label htmlFor={id + "-province"}>Province</label>
+                  <select
+                    id={id + "-province"}
+                    value={data.province}
+                    onChange={(e) => update("province", e.target.value)}
+                  >
+                    {[
+                      "KwaZulu-Natal",
+                      "Gauteng",
+                      "Western Cape",
+                      "Eastern Cape",
+                      "Free State",
+                      "Limpopo",
+                      "Mpumalanga",
+                      "North West",
+                      "Northern Cape",
+                    ].map((p) => (
+                      <option key={p}>{p}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="row2">
+                  <div className="field">
+                    <label htmlFor={id + "-preference"}>Contact me by</label>
+                    <select
+                      id={id + "-preference"}
+                      value={data.preference}
+                      onChange={(e) => update("preference", e.target.value)}
+                    >
+                      <option>WhatsApp</option>
+                      <option>Phone call</option>
+                    </select>
+                  </div>
+                  <div className="field">
+                    <label htmlFor={id + "-time"}>Preferred time</label>
+                    <select
+                      id={id + "-time"}
+                      value={data.contactTime}
+                      onChange={(e) => update("contactTime", e.target.value)}
+                    >
+                      {[
+                        "Any business-hour time",
+                        "Morning (08:00–12:00)",
+                        "Afternoon (12:00–17:00)",
+                      ].map((o) => (
+                        <option key={o}>{o}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </details>
+              <p className="small-note">
+                Times are South African time. We’ll arrange a suitable slot with you.
               </p>
-            </details>
-          </>
-        )}
-        {!ready ? (
-          <div className="intake-actions">
-            {step > 0 && (
-              <button type="button" className="text-link" onClick={() => move(step - 1)}>
-                <ArrowLeft size={16} /> Back
+            </fieldset>
+          )}
+          {step === reviewStep && (
+            <>
+              <div className="intake-review">
+                <div className="review-group">
+                  <div className="review-group-head">
+                    <strong>Your cover and needs</strong>
+                    <button type="button" onClick={() => move(0)}>
+                      Edit cover
+                    </button>
+                  </div>
+                  <p>{data.cover}</p>
+                  <dl>
+                    {questions.map((q) => (
+                      <div key={q.key}>
+                        <dt>{q.label}</dt>
+                        <dd>{data.answers[q.key] || "Not provided"}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <button type="button" className="text-link" onClick={() => move(1)}>
+                    Edit needs
+                  </button>
+                </div>
+                <div className="review-group">
+                  <div className="review-group-head">
+                    <strong>Contact details</strong>
+                    <button type="button" onClick={() => move(contactStep)}>
+                      Edit
+                    </button>
+                  </div>
+                  <p>
+                    {data.name}
+                    <br />
+                    {data.phone}
+                    {data.email && (
+                      <>
+                        <br />
+                        {data.email}
+                      </>
+                    )}
+                    <br />
+                    {data.province}
+                  </p>
+                  <p>
+                    {data.preference} · {data.contactTime}
+                  </p>
+                </div>
+              </div>
+              {!ready && (
+                <label className="consent">
+                  <input
+                    type="checkbox"
+                    required
+                    checked={data.consent}
+                    onChange={(e) => update("consent", e.target.checked)}
+                  />
+                  I agree that AA Wealth may contact me about this enquiry and use these details to
+                  assess my needs and arrange advisor follow-up. This is not consent to unrelated
+                  marketing.
+                </label>
+              )}
+              <details className="privacy-note">
+                <summary>How your details are used</summary>
+                <p>
+                  {onlineIntake
+                    ? "When you submit, AA Wealth securely saves your contact details, answers and enquiry permission using Cloudflare and Zoho CRM for advisor follow-up. Cloudflare Turnstile checks submissions for spam. A temporary delivery copy is retained for up to 30 days after successful CRM saving; failed enquiries are retained for support review. This does not subscribe you to unrelated marketing."
+                    : "Your answers stay in this page’s memory until you send them. They are not saved to a website database."}{" "}
+                  Sending by WhatsApp or email also shares them with the chosen messaging provider.
+                  Contact hello@aawealth.co.za about access, correction or deletion. Do not include
+                  identity documents or medical records.
+                </p>
+              </details>
+            </>
+          )}
+          {onlineIntake && step === reviewStep && !ready && (
+            <IntakeVerification
+              key={verifyVersion}
+              sitekey={turnstileSitekey!}
+              onToken={setTurnstileToken}
+            />
+          )}
+          {saveError && (
+            <div role="alert">
+              <p>{saveError}</p>
+              <a
+                className="text-link"
+                href={"https://wa.me/27765885126?text=" + encodeURIComponent(message)}
+              >
+                Send using WhatsApp
+              </a>
+            </div>
+          )}
+          {reference && ready && <p role="status">Enquiry reference: {reference}</p>}
+          {!ready ? (
+            <div className="intake-actions">
+              {step > 0 && (
+                <button type="button" className="text-link" onClick={() => move(step - 1)}>
+                  <ArrowLeft size={16} /> Back
+                </button>
+              )}
+              <button type="submit" className="btn btn-gold" disabled={saving}>
+                {saving
+                  ? "Saving your enquiry…"
+                  : step === reviewStep
+                    ? onlineIntake
+                      ? "Submit my enquiry"
+                      : "Prepare my quote enquiry"
+                    : "Continue"}
+                <ArrowUpRight size={18} />
               </button>
-            )}
-            <button type="submit" className="btn btn-gold">
-              {step === reviewStep ? "Prepare my quote enquiry" : "Continue"}
-              <ArrowUpRight size={18} />
-            </button>
-          </div>
-        ) : (
-          <div className="intake-handoff" role="status">
-            <a
-              className="btn btn-green"
-              href={"https://wa.me/27765885126?text=" + encodeURIComponent(message)}
-            >
-              Open WhatsApp to send <ArrowUpRight size={18} />
-            </a>
-            <a
-              className="email-alternative"
-              href={
-                "mailto:hello@aawealth.co.za?subject=Personalised%20quote%20enquiry&body=" +
-                encodeURIComponent(message)
-              }
-            >
-              Send using my email app instead
-            </a>
-            <button type="button" className="text-link" onClick={() => setReady(false)}>
-              Back to review
-            </button>
-          </div>
-        )}
-        <p className="form-footnote">
-          <ShieldCheck size={15} /> No obligation. Your advisor confirms quote options.
-        </p>
+            </div>
+          ) : (
+            <div className="intake-handoff" role="status">
+              <a
+                className="btn btn-green"
+                href={"https://wa.me/27765885126?text=" + encodeURIComponent(message)}
+              >
+                {onlineIntake ? "Continue on WhatsApp" : "Open WhatsApp to send"}{" "}
+                <ArrowUpRight size={18} />
+              </a>
+              <a
+                className="email-alternative"
+                href={
+                  "mailto:hello@aawealth.co.za?subject=Personalised%20quote%20enquiry&body=" +
+                  encodeURIComponent(message)
+                }
+              >
+                Send using my email app instead
+              </a>
+              <button type="button" className="text-link" onClick={() => setReady(false)}>
+                Back to review
+              </button>
+            </div>
+          )}
+          <p className="form-footnote">
+            <ShieldCheck size={15} /> No obligation. Your advisor confirms quote options.
+          </p>
+        </fieldset>
       </form>
     </div>
   );

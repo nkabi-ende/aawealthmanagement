@@ -1,0 +1,10 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "aawealth-zoho-intake",
+  "main": "index.ts",
+  "compatibility_date": "2026-11-05",
+  "vars": { "ENABLED": "false" },
+  "durable_objects": { "bindings": [{ "name": "INTAKE", "class_name": "IntakeInbox" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["IntakeInbox"] }],
+  "observability": { "enabled": true }
+}
