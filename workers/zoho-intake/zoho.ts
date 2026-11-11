@@ -108,7 +108,7 @@ export async function deliverToZoho(
   try {
   const tokenResponse = await fetcher("https://accounts.zoho.com/oauth/v2/token", {
     method: "POST",
-    redirect: "error",
+    redirect: "manual",
     signal: AbortSignal.timeout(12000),
     body: new URLSearchParams({
       grant_type: "refresh_token",
@@ -117,6 +117,7 @@ export async function deliverToZoho(
       refresh_token: config.ZOHO_REFRESH_TOKEN,
     }),
   });
+  if (!tokenResponse.ok) throw new Error("Zoho authentication failed");
   const token = (await tokenResponse.json()) as { access_token?: string; api_domain?: string };
   if (!tokenResponse.ok || !token.access_token || token.api_domain !== "https://www.zohoapis.com")
     throw new Error("Zoho authentication failed");
@@ -126,7 +127,7 @@ export async function deliverToZoho(
       : body ? "note_create" : "note_lookup";
     const response = await fetcher("https://www.zohoapis.com/crm/v8/" + path, {
       method: body ? "POST" : "GET",
-      redirect: "error",
+      redirect: "manual",
       signal: AbortSignal.timeout(12000),
       headers: {
         Authorization: "Zoho-oauthtoken " + token.access_token,
