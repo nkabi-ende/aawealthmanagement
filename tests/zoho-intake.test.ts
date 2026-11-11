@@ -43,10 +43,10 @@ function mock(existing: Record<string, unknown>[] = [], noteExists = false) {
   const writes: { path: string; body: any }[] = [];
   const fetcher = async (input: any, init: any) => {
     const u = new URL(input);
+    assert.equal(init.redirect, "manual");
     let data: any;
     if (u.hostname === "accounts.zoho.com")
       return Response.json({ access_token: "mock", api_domain: "https://www.zohoapis.com" });
-    assert.equal(init.redirect, "error");
     if (init.method === "POST") {
       writes.push({ path: u.pathname, body: JSON.parse(init.body) });
       data = [{ status: "success", details: { id: "12345" } }];
@@ -105,4 +105,24 @@ test("authentication failures and unconfirmed CRM writes never count as success"
         ? Response.json({ data: [{ status: "error" }] })
         : m.fetcher(i, o)) as typeof fetch),
   );
+});
+
+test("redirects from token and CRM endpoints are rejected without following them", async () => {
+  let requests = 0;
+  const redirected = (async (_input: any, init: any) => {
+    requests++;
+    assert.equal(init.redirect, "manual");
+    return new Response(null, { status: 302, headers: { Location: "https://example.com" } });
+  }) as typeof fetch;
+  await assert.rejects(() => deliverToZoho(sample(), ref, date, config, redirected), /Zoho authentication failed/);
+  assert.equal(requests, 1);
+  requests = 0;
+  const crmRedirect = (async (_input: any, init: any) => {
+    assert.equal(init.redirect, "manual");
+    return ++requests === 1
+      ? Response.json({ access_token: "mock", api_domain: "https://www.zohoapis.com" })
+      : new Response(null, { status: 302 });
+  }) as typeof fetch;
+  await assert.rejects(() => deliverToZoho(sample(), ref, date, config, crmRedirect), /Zoho request failed 302/);
+  assert.equal(requests, 2);
 });
