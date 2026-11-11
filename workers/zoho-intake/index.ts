@@ -199,8 +199,16 @@ export class IntakeInbox {
           await deliverToZoho(job.data, job.reference, job.receivedAt, this.env);
           job.state = "saved";
           job.completedAt = Date.now();
+          console.info("Zoho intake delivered", { reference: job.reference });
         } catch (error) {
           job.attempts++;
+          // Only fixed, known messages may enter logs; never log upstream bodies or customer data.
+          const message = error instanceof Error ? error.message : "";
+          const reason = /^(Zoho authentication failed|Zoho request failed [0-9]{3}|Zoho did not confirm contact|Zoho did not confirm enquiry note|Too many matches|Contact match needs review|Enquiry history needs review)$/.test(message)
+            ? message : "Delivery exception or timeout";
+          console.warn("Zoho intake delivery failed", {
+            reference: job.reference, attempt: job.attempts, reason,
+          });
           if (error instanceof ReviewRequired || job.attempts >= 12) {
             job.state = "review";
             console.error("Zoho intake needs operator review", { reference: job.reference });
