@@ -107,9 +107,9 @@ export default function LeadForm({
       setSaveError(
         "We could not confirm online receipt. Please retry, or send your enquiry using WhatsApp below.",
       );
+    } finally {
       setTurnstileToken("");
       setVerifyVersion((v) => v + 1);
-    } finally {
       setSaving(false);
     }
   };
