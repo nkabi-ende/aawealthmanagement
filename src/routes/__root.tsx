@@ -130,6 +130,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
+        <meta name="facebook-domain-verification" content="4op4ys20vq8ldxwda8h3242wdwyxll" />
         {/* Google tag — GTM-WNSMZQKB */}
         <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-WNSMZQKB" />
         <script
