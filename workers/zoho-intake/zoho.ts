@@ -66,6 +66,16 @@ export function cleanIntake(input: unknown): IntakeData {
     consent: true,
   };
 }
+export function toZohoDateTime(value: string): string {
+  const date = new Date(value);
+
+  if (!Number.isFinite(date.getTime())) {
+    throw new ReviewRequired("Invalid enquiry timestamp");
+  }
+
+  return date.toISOString().slice(0, 19) + "+00:00";
+}
+
 export function contactFields(data: IntakeData, reference: string, receivedAt: string) {
   const a = data.answers;
   return {
@@ -74,7 +84,10 @@ export function contactFields(data: IntakeData, reference: string, receivedAt: s
     Mobile: data.phone,
     ...(data.email ? { Email: data.email } : {}),
     Mailing_Country: "South Africa",
-    Mailing_State: data.province,
+    Mailing_State:
+      data.province === "North West"
+        ? "North West (South Africa)"
+        : data.province,
     Customer_Status: "Prospect",
     Product_Interest: data.cover,
     Age_Range: a.age || "",
@@ -91,7 +104,7 @@ export function contactFields(data: IntakeData, reference: string, receivedAt: s
     Preferred_Callback_Time: data.contactTime,
     Enquiry_Consent: true,
     Consent_Version: "aa-intake-v2-zoho",
-    Enquiry_Received_At: receivedAt,
+    Enquiry_Received_At: toZohoDateTime(receivedAt),
     Latest_Enquiry_ID: reference,
     Latest_Enquiry_Answers: formatIntakeMessage(data),
   };
