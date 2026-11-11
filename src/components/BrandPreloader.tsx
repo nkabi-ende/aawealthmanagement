@@ -10,7 +10,7 @@ function rememberIntro() {
   }
 }
 export default function BrandPreloader() {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
   const [leaving, setLeaving] = useState(false);
   useEffect(() => {
     const replay = new URLSearchParams(window.location.search).get("intro") === "1";
@@ -20,9 +20,11 @@ export default function BrandPreloader() {
     } catch {
       /* Storage is optional. */
     }
-    if (seen && !replay) return;
+    if (seen && !replay) {
+      setVisible(false);
+      return;
+    }
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    setVisible(true);
     const leaveTimer = window.setTimeout(() => setLeaving(true), reduced ? 350 : 2100);
     const finishTimer = window.setTimeout(
       () => {
