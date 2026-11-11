@@ -5,6 +5,7 @@ import {
   contactFields,
   deliverToZoho,
   ReviewRequired,
+  toZohoDateTime,
 } from "../workers/zoho-intake/zoho.ts";
 import { COVER_OPTIONS, getCoverQuestions } from "../src/lib/intake.ts";
 const sample = (cover = "Life cover") =>
@@ -39,6 +40,20 @@ test("every product preserves its answers; no stale or arbitrary answers are acc
   assert.throws(() => cleanIntake({ ...d, answers: {} }));
   assert.equal(d.phone, "+27821234567");
 });
+test("Zoho datetime mapping normalizes UTC and explicit offsets without milliseconds", () => {
+  assert.equal(toZohoDateTime("2026-11-11T00:44:49.227Z"), "2026-11-11T00:44:49+00:00");
+  assert.equal(toZohoDateTime("2026-11-11T02:44:49.227+02:00"), "2026-11-11T00:44:49+00:00");
+  assert.equal(contactFields(sample(), ref, date).Enquiry_Received_At, "2026-11-11T00:00:00+00:00");
+  assert.throws(() => toZohoDateTime("not a timestamp"), ReviewRequired);
+});
+
+test("North West province maps to Zoho picklist while other provinces are unchanged", () => {
+  const northWest = sample();
+  northWest.province = "North West";
+  assert.equal(contactFields(northWest, ref, date).Mailing_State, "North West (South Africa)");
+  assert.equal(contactFields(sample(), ref, date).Mailing_State, "KwaZulu-Natal");
+});
+
 function mock(existing: Record<string, unknown>[] = [], noteExists = false) {
   const writes: { path: string; body: any }[] = [];
   const fetcher = async (input: any, init: any) => {
@@ -62,6 +77,7 @@ test("new contact includes all mapped fields and an enquiry note", async () => {
   assert.equal(result.contactId, "12345");
   assert.equal(m.writes.length, 2);
   assert.equal(m.writes[0].body.data[0].Customer_Status, "Prospect");
+  assert.equal(m.writes[0].body.data[0].Enquiry_Received_At, "2026-11-11T00:00:00+00:00");
   assert.equal(m.writes[1].body.data[0].Note_Title, "Website enquiry " + ref);
 });
 test("repeat enquiry appends a note without modifying existing client identity, owner or status", async () => {
