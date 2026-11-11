@@ -104,6 +104,8 @@ export async function deliverToZoho(
   config: ZohoConfig,
   fetcher: typeof fetch = fetch,
 ) {
+  let stage = "token_refresh";
+  try {
   const tokenResponse = await fetcher("https://accounts.zoho.com/oauth/v2/token", {
     method: "POST",
     redirect: "error",
@@ -119,6 +121,9 @@ export async function deliverToZoho(
   if (!tokenResponse.ok || !token.access_token || token.api_domain !== "https://www.zohoapis.com")
     throw new Error("Zoho authentication failed");
   const api = async (path: string, body?: unknown) => {
+    stage = path.startsWith("Contacts/search?") ? "contact_lookup"
+      : path === "Contacts" ? "contact_create"
+      : body ? "note_create" : "note_lookup";
     const response = await fetcher("https://www.zohoapis.com/crm/v8/" + path, {
       method: body ? "POST" : "GET",
       redirect: "error",
@@ -206,4 +211,14 @@ export async function deliverToZoho(
     if (notes.data?.[0]?.status !== "success") throw new Error("Zoho did not confirm enquiry note");
   }
   return { contactId };
+  } catch (error) {
+    // Emit only controlled stages and error categories; upstream bodies may contain secrets or PII.
+    if (error instanceof ReviewRequired ||
+        (error instanceof Error && /^(Zoho authentication failed|Zoho request failed [0-9]{3}|Zoho did not confirm contact|Zoho did not confirm enquiry note)$/.test(error.message)))
+      throw error;
+    const name = error instanceof Error &&
+      ["TypeError", "SyntaxError", "AbortError", "TimeoutError", "RangeError"].includes(error.name)
+      ? error.name : "RuntimeError";
+    throw new Error("Zoho delivery failed at " + stage + ": " + name);
+  }
 }
