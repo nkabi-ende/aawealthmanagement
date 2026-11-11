@@ -204,7 +204,7 @@ export class IntakeInbox {
           job.attempts++;
           // Only fixed, known messages may enter logs; never log upstream bodies or customer data.
           const message = error instanceof Error ? error.message : "";
-          const reason = /^(Zoho authentication failed|Zoho request failed [0-9]{3}|Zoho did not confirm contact|Zoho did not confirm enquiry note|Too many matches|Contact match needs review|Enquiry history needs review)$/.test(message)
+          const reason = /^(Zoho authentication failed|Zoho request failed [0-9]{3}|Zoho did not confirm contact|Zoho did not confirm enquiry note|Too many matches|Contact match needs review|Enquiry history needs review|Zoho delivery failed at (token_refresh|contact_lookup|contact_create|note_lookup|note_create): (TypeError|SyntaxError|AbortError|TimeoutError|RangeError|RuntimeError))$/.test(message)
             ? message : "Delivery exception or timeout";
           console.warn("Zoho intake delivery failed", {
             reference: job.reference, attempt: job.attempts, reason,
