@@ -137,7 +137,24 @@ export async function deliverToZoho(
     });
     if (response.status === 204)
       return { data: [] } as { data: Record<string, any>[]; info?: { more_records: boolean } };
-    if (!response.ok) throw new Error("Zoho request failed " + response.status);
+    if (!response.ok) {
+      let failure: any;
+      try { failure = await response.json(); } catch { failure = {}; }
+      const item = failure.data?.[0] || failure;
+      const allowedCodes = ["INVALID_DATA", "INVALID_QUERY", "EXPECTED_PARAM_MISSING", "MANDATORY_NOT_FOUND",
+        "REQUIRED_PARAM_MISSING", "LIMIT_REACHED", "NOT_SUPPORTED", "INVALID_REQUEST_METHOD",
+        "AUTHORIZATION_FAILED", "OAUTH_SCOPE_MISMATCH", "NO_PERMISSION", "INVALID_URL_PATTERN",
+        "DUPLICATE_DATA", "INVALID_TOKEN", "INTERNAL_ERROR"];
+      const allowedFields = ["Last_Name", "Mobile", "Email", "Mailing_Country", "Mailing_State",
+        "Customer_Status", "Enquiry_Received_At", "Owner", "Note_Title", "Note_Content",
+        "Parent_Id", "Website_Full_Name", "Latest_Enquiry_ID", "Latest_Enquiry_Answers"];
+      console.warn("Zoho CRM rejected request", {
+        stage, status: response.status,
+        code: allowedCodes.includes(item.code) ? item.code : "UNRECOGNISED",
+        field: allowedFields.includes(item.details?.api_name) ? item.details.api_name : "unspecified",
+      });
+      throw new Error("Zoho request failed " + response.status);
+    }
     return (await response.json()) as {
       data: Record<string, any>[];
       info?: { more_records: boolean };
