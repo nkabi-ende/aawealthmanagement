@@ -133,6 +133,9 @@ function RootShell({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <noscript>
+          <style>{`.aa-preloader { display: none !important; }`}</style>
+        </noscript>
         {children}
         <Scripts />
       </body>
