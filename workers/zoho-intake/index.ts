@@ -92,6 +92,7 @@ export default {
       typeof body.reference !== "string" ||
       !/^AA-[0-9a-f-]{36}$/.test(body.reference) ||
       typeof body.turnstileToken !== "string" ||
+      body.turnstileToken.length === 0 ||
       body.turnstileToken.length > 2048
     )
       return json({ error: "Invalid submission" }, 400, origin);
@@ -106,12 +107,13 @@ export default {
         }),
         signal: AbortSignal.timeout(10000),
       });
+      if (!check.ok) throw new Error("Verification service failed");
       verification = await check.json();
     } catch {
       return json({ error: "Verification unavailable. Please retry." }, 503, origin);
     }
     if (
-      !verification.success ||
+      verification.success !== true ||
       !["aawealthmanagement.co.za", "www.aawealthmanagement.co.za"].includes(
         verification.hostname || "",
       ) ||
