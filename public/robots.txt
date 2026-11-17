@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aawealthmanagement.co.za/sitemap.xml
