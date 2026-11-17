@@ -8,7 +8,7 @@ Marketing and lead-capture website for **Amathintane Amahle Wealth Management t/
 
 AA Wealth helps working families and young professionals across KZN move from "covered for the funeral" to "secured for life" — with complete protection across income, illness, life, disability, savings and funeral cover, delivered with the personal trust of a local broker and the speed of a modern, digital service.
 
-This repository contains the source for the public marketing site: a single high-converting landing page with lead capture and click-to-WhatsApp.
+This repository contains the source for the public marketing site with lead capture and click-to-WhatsApp.
 
 ## Tech stack
 
@@ -18,36 +18,34 @@ This repository contains the source for the public marketing site: a single high
 - **UI components:** Radix UI primitives
 - **Build config:** `@lovable.dev/vite-tanstack-config`
 - **Rendering:** Static prerendering (SSG)
-- **Hosting:** Vercel
+- **Hosting:** Cloudflare (not Vercel)
 - **Package manager:** Bun
 
 ## Local development
 
 ```bash
-# install dependencies
 bun install
-
-# start the dev server
 bun run dev
-
-# build for production
 bun run build
 ```
 
-The production build outputs prerendered static files to `dist/client`.
+The build outputs prerendered static files to `dist/client` and ensures `sitemap.xml` and `robots.txt` are included.
 
-## Deployment
+## Production deployment: Cloudflare
 
-The site auto-deploys to Vercel on every push to `main`.
+The production site uses Cloudflare. Configure the existing Cloudflare deployment to build the `main` branch with:
 
-**Vercel build settings:**
-- Framework Preset: `Vite`
-- Build Command: `bun run build`
-- Output Directory: `dist/client`
+- Build command: `bun run build`
+- Output directory: `dist/client`
+- Site domain: `aawealthmanagement.co.za`
 
-Prerendering is enabled in `vite.config.ts` so all routes build to static HTML.
+Static assets are configured in `wrangler.jsonc`.
+
+**Vercel is retired for this repository.** The root `vercel.json` sets `git.deploymentEnabled` to `false` to disable Vercel automatic Git deployments while its former project connection is being removed. To fully disconnect it and stop the GitHub integration reporting Vercel checks, open the old Vercel project's **Settings → Git → Connected Git Repository → Disconnect**. This action is managed at Vercel, not by repository files.
 
 ## Project structure
+
+```
 src/
 ├── routes/        # File-based routes (pages)
 ├── components/    # Reusable UI components
@@ -55,7 +53,8 @@ src/
 ├── lib/           # Utilities & helpers
 ├── router.tsx     # Router setup
 ├── server.ts      # Server entry (SSR wrapper)
-└── styles.css      # Global styles
+└── styles.css     # Global styles
+```
 
 ## Compliance
 
