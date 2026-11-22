@@ -395,7 +395,7 @@ export default function LeadForm({
                     ? "When you submit, AA Wealth securely saves your contact details, answers and enquiry permission using Cloudflare and Zoho CRM for advisor follow-up. Cloudflare Turnstile checks submissions for spam. A temporary delivery copy is retained for up to 30 days after successful CRM saving; failed enquiries are retained for support review. This does not subscribe you to unrelated marketing."
                     : "Your answers stay in this page’s memory until you send them. They are not saved to a website database."}{" "}
                   Sending by WhatsApp or email also shares them with the chosen messaging provider.
-                  Contact hello@aawealth.co.za about access, correction or deletion. Do not include
+                  Contact hello@aawealthmanagement.co.za about access, correction or deletion. Do not include
                   identity documents or medical records.
                 </p>
               </details>
@@ -450,7 +450,7 @@ export default function LeadForm({
               <a
                 className="email-alternative"
                 href={
-                  "mailto:hello@aawealth.co.za?subject=Personalised%20quote%20enquiry&body=" +
+                  "mailto:hello@aawealthmanagement.co.za?subject=Personalised%20quote%20enquiry&body=" +
                   encodeURIComponent(message)
                 }
               >

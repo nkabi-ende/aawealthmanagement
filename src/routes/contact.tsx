@@ -70,8 +70,8 @@ function Contact() {
               9:00–13:00
               <br />
               <strong style={{ color: "var(--navy)" }}>Email:</strong>{" "}
-              <a href="mailto:hello@aawealth.co.za" style={{ color: "var(--emerald)" }}>
-                hello@aawealth.co.za
+              <a href="mailto:hello@aawealthmanagement.co.za" style={{ color: "var(--emerald)" }}>
+                hello@aawealthmanagement.co.za
               </a>
               <br />
               <strong style={{ color: "var(--navy)" }}>Area:</strong> Durban, KwaZulu-Natal —

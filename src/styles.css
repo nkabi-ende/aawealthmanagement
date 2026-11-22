@@ -1060,7 +1060,7 @@ footer.site a:hover {
   gap: 10px;
   margin-top: 14px;
 }
-.socials a {
+footer.site .socials a {
   width: 38px;
   height: 38px;
   border-radius: 10px;
@@ -1073,9 +1073,13 @@ footer.site a:hover {
     background 0.2s,
     color 0.2s;
 }
-.socials a:hover {
+footer.site .socials a:hover {
   background: var(--gold);
   color: var(--navy);
+}
+footer.site .socials a svg {
+  display: block;
+  flex-shrink: 0;
 }
 .compliance {
   border-top: 1px solid rgba(255, 255, 255, 0.1);

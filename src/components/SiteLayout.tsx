@@ -170,7 +170,7 @@ function SiteFooter() {
             <h4>Contact</h4>
             <a href="tel:+27765885126">076 588 5126</a>
             <a href={WA_URL}>WhatsApp us</a>
-            <a href="mailto:hello@aawealth.co.za">hello@aawealth.co.za</a>
+            <a href="mailto:hello@aawealthmanagement.co.za">hello@aawealthmanagement.co.za</a>
             <address style={{ fontStyle: "normal", color: "rgba(255,255,255,.7)", marginTop: 9 }}>
               Durban, KwaZulu-Natal
               <br />
