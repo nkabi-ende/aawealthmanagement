@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { BadgeCheck, MonitorSmartphone, ArrowUpRight } from "lucide-react";
 import SiteLayout from "@/components/SiteLayout";
 
 export const Route = createFileRoute("/about")({
@@ -8,9 +9,10 @@ export const Route = createFileRoute("/about")({
       {
         name: "description",
         content:
-          "Meet AA Wealth Management — a Durban-based licensed brokerage helping KZN families build complete protection plans. FSP 50739.",
+          "Meet AA Wealth: 20+ years of insurance industry experience, led by Thami Nkabinde, former Liberty Life, with Brandon Nkabinde heading operations and innovation. FSP 50739.",
       },
     ],
+    links: [{ rel: "canonical", href: "https://aawealthmanagement.co.za/about" }],
   }),
   component: About,
 });
@@ -43,6 +45,55 @@ function About() {
             that actually protects your life: your income, your health, your loved ones, and your
             future. One advisor. One plan. Reviewed with you as life changes.
           </p>
+        </div>
+      </section>
+
+      <section className="sec ivory about-leadership" aria-labelledby="about-leadership-heading">
+        <div className="wrap">
+          <div className="about-leadership-intro">
+            <p className="eyebrow">A people-led brokerage</p>
+            <h2 id="about-leadership-heading">Insurance experience, grounded in community.</h2>
+            <p>
+              AA Wealth draws on more than 20 years of insurance industry experience within its
+              leadership. Our approach combines established product understanding with local field
+              relationships and digital client service.
+            </p>
+          </div>
+          <div className="home-leaders">
+            <article className="home-leader home-leader--principal">
+              <div className="home-leader-top"><span>MANAGING DIRECTOR &amp; BROKER PRINCIPAL</span><BadgeCheck size={24} aria-hidden="true" /></div>
+              <div className="home-leader-monogram" aria-hidden="true">TN</div>
+              <div className="home-leader-copy">
+                <p className="home-leader-role">Brokerage leadership</p>
+                <h3>Thami Nkabinde</h3>
+                <p>
+                  With previous experience at Liberty Life, Thami brings an insurance background
+                  to AA Wealth's leadership, client approach and brokerage direction.
+                </p>
+                <span className="home-leader-detail">Former Liberty Life professional · AA Wealth Managing Director</span>
+              </div>
+            </article>
+            <article className="home-leader home-leader--operations">
+              <div className="home-leader-top"><span>FIELD &amp; DIGITAL OPERATIONS</span><MonitorSmartphone size={24} aria-hidden="true" /></div>
+              <div className="home-leader-monogram" aria-hidden="true">BN</div>
+              <div className="home-leader-copy">
+                <p className="home-leader-role">Operations &amp; innovation</p>
+                <h3>Brandon Nkabinde</h3>
+                <p>
+                  Brandon leads day-to-day brokerage operations, the field and digital teams,
+                  and the systems and innovation supporting service delivery.
+                </p>
+                <span className="home-leader-detail">Field distribution · Digital client journeys · Innovation</span>
+              </div>
+            </article>
+          </div>
+          <div className="home-authority-bar">
+            <div>
+              <BadgeCheck size={24} aria-hidden="true" />
+              <p><strong>Experience supported by accountability</strong><span>AA Wealth · FSP No. 50739</span></p>
+            </div>
+            <Link to="/contact">Contact our team <ArrowUpRight size={16} aria-hidden="true" /></Link>
+          </div>
         </div>
       </section>
 
