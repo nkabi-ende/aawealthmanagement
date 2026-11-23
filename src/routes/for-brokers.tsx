@@ -2,6 +2,11 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import SiteLayout from "@/components/SiteLayout";
 import {
+  buildBrokerEnquiryMessage,
+  emailEnquiryUrl,
+  whatsappEnquiryUrl,
+} from "@/lib/b2b-enquiry";
+import {
   ArrowRight,
   ArrowUpRight,
   BarChart3,
@@ -128,9 +133,45 @@ const stack = [
   { id: "04", title: "Improve", detail: "Insights · training · retention", icon: BarChart3 },
 ];
 
+
+const serviceModels = [
+  {
+    id: "foundation",
+    number: "01",
+    term: "ONCE-OFF SETUP",
+    title: "Digital Foundation",
+    description: "Get a credible, conversion-ready digital presence without needing a full operational overhaul.",
+    bestFor: "New brokerages and teams with an outdated online presence",
+    includes: ["Brokerage website or rebuild", "SEO & local business visibility", "Quote and enquiry journeys", "Essential analytics & tracking"],
+  },
+  {
+    id: "growth",
+    number: "02",
+    term: "SETUP + ONGOING SUPPORT",
+    title: "Growth Engine",
+    description: "Connect campaigns to lead handling so you can understand which activities create sales opportunities.",
+    bestFor: "Brokerages ready to grow and improve lead conversion",
+    includes: ["Digital marketing & creative", "CRM pipelines and lead routing", "Lead source and conversion reporting", "Campaign and funnel optimisation"],
+  },
+  {
+    id: "operations",
+    number: "03",
+    term: "CUSTOM SCOPE + SUPPORT",
+    title: "Broker Operations",
+    description: "Give teams better processes, agent enablement and a clearer view of day-to-day performance.",
+    bestFor: "Field-led teams and brokerages managing multiple agents",
+    includes: ["Agent onboarding materials", "Sales process & coaching playbooks", "Follow-up and servicing workflows", "Management dashboards & reviews"],
+  },
+];
+
 function ForBrokers() {
   const [selected, setSelected] = useState<string[]>([]);
   const [business, setBusiness] = useState("");
+  const [contactName, setContactName] = useState("");
+  const [teamSize, setTeamSize] = useState("");
+  const [currentCrm, setCurrentCrm] = useState("");
+  const [primaryChallenge, setPrimaryChallenge] = useState("");
+  const [selectedPackage, setSelectedPackage] = useState("");
 
   const togglePriority = (value: string) => {
     setSelected((current) =>
@@ -138,21 +179,20 @@ function ForBrokers() {
     );
   };
 
-  const prioritiesText = selected.length > 0 ? selected.join(", ") : "a general broker services discussion";
-  const companyText = business.trim() || "our brokerage";
-  const message = [
-    "Hello AA Wealth, I'd like to discuss broker growth and operational services.",
-    "Brokerage: " + companyText,
-    "Priority areas: " + prioritiesText,
-    "Please contact me to discuss the best approach.",
-  ].join("\n");
-
-  const whatsappLink = "https://wa.me/27765885126?text=" + encodeURIComponent(message);
-  const emailLink =
-    "mailto:hello@aawealthmanagement.co.za?subject=" +
-    encodeURIComponent("Broker services enquiry — " + companyText) +
-    "&body=" +
-    encodeURIComponent(message);
+  const message = buildBrokerEnquiryMessage({
+    contactName,
+    brokerage: business,
+    teamSize,
+    currentCrm,
+    primaryChallenge,
+    packageName: selectedPackage,
+    priorities: selected,
+  });
+  const whatsappLink = whatsappEnquiryUrl(message);
+  const emailLink = emailEnquiryUrl(
+    "Broker services enquiry — " + (business.trim() || "New enquiry"),
+    message,
+  );
 
   return (
     <SiteLayout>
@@ -259,33 +299,43 @@ function ForBrokers() {
           <div className="partner-section-heading">
             <div>
               <p className="eyebrow">Choose your starting point</p>
-              <h2>Start with the bottleneck. Build from there.</h2>
+              <h2>Choose the right kind of support.</h2>
             </div>
-            <p>Not every brokerage needs a full technology rebuild. Start with the work that matters most.</p>
+            <p>Three practical engagement models. No generic packages or unrealistic performance promises.</p>
           </div>
-          <div className="broker-engagement-grid">
-            <div>
-              <span>01 — GET FOUND</span>
-              <Globe2 size={23} aria-hidden="true" />
-              <h3>Digital foundation</h3>
-              <p>A credible website, quote journeys, local search and a clear way for prospects to reach you.</p>
-              <small>WEBSITE · SEO · FORMS · TRACKING</small>
-            </div>
-            <div>
-              <span>02 — GROW SMARTER</span>
-              <Megaphone size={23} aria-hidden="true" />
-              <h3>Growth & conversion</h3>
-              <p>Campaigns connected to a CRM, with clearer lead quality, assignment, response times and reporting.</p>
-              <small>CAMPAIGNS · CRM · LEAD OPS</small>
-            </div>
-            <div>
-              <span>03 — ENABLE THE TEAM</span>
-              <UsersRound size={23} aria-hidden="true" />
-              <h3>Sales operations</h3>
-              <p>Agent onboarding materials, workflow design, follow-up disciplines and performance scorecards.</p>
-              <small>ONBOARDING · COACHING · REPORTS</small>
-            </div>
+          <div className="broker-engagement-grid broker-package-grid">
+            {serviceModels.map((model) => (
+              <article
+                className={"broker-package-card" + (selectedPackage === model.title ? " is-selected" : "")}
+                key={model.id}
+              >
+                <div className="broker-package-topline">
+                  <span>{model.number} / {model.term}</span>
+                  <span aria-hidden="true">{model.number}</span>
+                </div>
+                <h3>{model.title}</h3>
+                <p>{model.description}</p>
+                <p className="broker-package-best"><strong>Best for</strong> {model.bestFor}</p>
+                <ul>
+                  {model.includes.map((item) => (
+                    <li key={item}><Check size={14} aria-hidden="true" /> {item}</li>
+                  ))}
+                </ul>
+                <a
+                  href="#broker-enquiry"
+                  onClick={() => setSelectedPackage(model.title)}
+                  className="broker-package-cta"
+                >
+                  {selectedPackage === model.title ? "Selected — discuss this scope" : "Discuss this approach"}
+                  <ArrowUpRight size={16} aria-hidden="true" />
+                </a>
+              </article>
+            ))}
           </div>
+          <p className="broker-packages-footnote">
+            Each engagement is quoted to scope. Advertising spend, CRM subscriptions and third-party
+            tools are not automatically included. Choose an approach, or tell us what needs fixing.
+          </p>
         </div>
       </section>
 
@@ -365,8 +415,8 @@ function ForBrokers() {
             <p className="eyebrow">Let's talk brokerage growth</p>
             <h2>Tell us what needs to work <em>better.</em></h2>
             <p>
-              Select the services you’re interested in and we’ll prepare your enquiry for WhatsApp
-              or email. No account or form submission required.
+              Tell us about your brokerage and select the work you need. We’ll prepare a clearly
+              structured enquiry for WhatsApp or email without requiring an account.
             </p>
             <div className="broker-contact-meta">
               <span><Handshake size={18} aria-hidden="true" /> Independent brokers & FSP teams</span>
@@ -378,8 +428,18 @@ function ForBrokers() {
             <div className="broker-enquiry-heading">
               <span>AA / BROKER SERVICES</span>
               <h3>Start a conversation.</h3>
-              <p>Choose your priorities to personalise the message.</p>
+              <p>Choose a package and your priorities to prepare a useful first conversation.</p>
             </div>
+            <label htmlFor="broker-contact-name">Your name <small>(optional)</small></label>
+            <input
+              id="broker-contact-name"
+              type="text"
+              autoComplete="name"
+              maxLength={100}
+              placeholder="Your name and surname"
+              value={contactName}
+              onChange={(event) => setContactName(event.target.value)}
+            />
             <label htmlFor="broker-company">Brokerage name <small>(optional)</small></label>
             <input
               id="broker-company"
@@ -390,6 +450,58 @@ function ForBrokers() {
               value={business}
               onChange={(event) => setBusiness(event.target.value)}
             />
+            <div className="broker-enquiry-field-row">
+              <div>
+                <label htmlFor="broker-team-size">Team size <small>(optional)</small></label>
+                <select
+                  id="broker-team-size"
+                  value={teamSize}
+                  onChange={(event) => setTeamSize(event.target.value)}
+                >
+                  <option value="">Select size</option>
+                  <option>Just me</option>
+                  <option>2–5 representatives</option>
+                  <option>6–20 representatives</option>
+                  <option>More than 20 representatives</option>
+                </select>
+              </div>
+              <div>
+                <label htmlFor="broker-crm">Current CRM <small>(optional)</small></label>
+                <select
+                  id="broker-crm"
+                  value={currentCrm}
+                  onChange={(event) => setCurrentCrm(event.target.value)}
+                >
+                  <option value="">Select setup</option>
+                  <option>No CRM yet</option>
+                  <option>Spreadsheets / manual</option>
+                  <option>Zoho CRM</option>
+                  <option>Other CRM or broker system</option>
+                </select>
+              </div>
+            </div>
+            <p className="broker-enquiry-label">Preferred engagement</p>
+            <div className="broker-package-picks" role="group" aria-label="Select a preferred service package">
+              {serviceModels.map((model) => (
+                <button
+                  key={model.id}
+                  type="button"
+                  className={selectedPackage === model.title ? "selected" : ""}
+                  aria-pressed={selectedPackage === model.title}
+                  onClick={() => setSelectedPackage(selectedPackage === model.title ? "" : model.title)}
+                >
+                  {model.title}
+                </button>
+              ))}
+              <button
+                type="button"
+                className={selectedPackage === "Bespoke / AA Software" ? "selected" : ""}
+                aria-pressed={selectedPackage === "Bespoke / AA Software"}
+                onClick={() => setSelectedPackage(selectedPackage === "Bespoke / AA Software" ? "" : "Bespoke / AA Software")}
+              >
+                Bespoke / AA Software
+              </button>
+            </div>
             <p className="broker-enquiry-label" id="broker-priorities-label">What would you like help with?</p>
             <div className="broker-priority-list" role="group" aria-labelledby="broker-priorities-label">
               {priorities.map((priority) => (
@@ -404,6 +516,17 @@ function ForBrokers() {
                 </button>
               ))}
             </div>
+            <label htmlFor="broker-challenge" className="broker-challenge-label">
+              Biggest challenge <small>(optional)</small>
+            </label>
+            <textarea
+              id="broker-challenge"
+              rows={3}
+              maxLength={280}
+              placeholder="e.g. Our agents get leads, but follow-up is inconsistent."
+              value={primaryChallenge}
+              onChange={(event) => setPrimaryChallenge(event.target.value)}
+            />
             <div className="broker-enquiry-actions">
               <a href={whatsappLink} className="btn btn-green" target="_blank" rel="noopener noreferrer">
                 Enquire on WhatsApp <ArrowUpRight size={17} aria-hidden="true" />

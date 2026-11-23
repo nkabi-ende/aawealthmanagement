@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import SiteLayout from "@/components/SiteLayout";
+import AgentInterestForm from "@/components/AgentInterestForm";
 import { ArrowRight, BriefcaseBusiness, ClipboardCheck, Handshake, ShieldCheck, UsersRound } from "lucide-react";
 
 export const Route = createFileRoute("/for-agents")({
@@ -15,11 +16,6 @@ export const Route = createFileRoute("/for-agents")({
   }),
   component: ForAgents,
 });
-
-const agentWhatsApp =
-  "https://wa.me/27765885126?text=Hello%20AA%20Wealth%2C%20I%20am%20interested%20in%20joining%20your%20field%20sales%20team.";
-const agentEmail =
-  "mailto:hello@aawealthmanagement.co.za?subject=Field%20Sales%20Representative%20Enquiry";
 
 const responsibilities = [
   {
@@ -156,22 +152,24 @@ function ForAgents() {
       </section>
 
       <section className="sec white" id="agent-enquiry">
-        <div className="wrap">
-          <div className="partner-cta-band">
+        <div className="wrap agent-enquiry-grid">
+          <div className="agent-enquiry-copy">
             <p className="eyebrow">For prospective representatives</p>
-            <h2>Your community could be your next opportunity.</h2>
+            <h2>Start with a conversation. <em>Build from there.</em></h2>
             <p>
-              Send us your name, location and a brief introduction. We’ll discuss available
-              opportunities and the process before any appointment.
+              Tell us where you're based and what experience you bring. We’ll discuss
+              the opportunity, how commission arrangements work and the next recruitment steps.
             </p>
-            <div className="partner-actions">
-              <a href={agentWhatsApp} className="btn btn-gold">
-                Enquire on WhatsApp <ArrowRight size={17} aria-hidden="true" />
-              </a>
-              <a href={agentEmail} className="btn btn-ghost on-dark">Email your interest</a>
+            <div className="agent-enquiry-details">
+              <div><span>01</span><strong>Role suitability</strong><p>Understand the responsibilities, field activity and selection requirements.</p></div>
+              <div><span>02</span><strong>Commission structure</strong><p>Discuss the agreed commission terms before proceeding. No earnings are guaranteed.</p></div>
+              <div><span>03</span><strong>Regulatory onboarding</strong><p>Any appointment and regulated sales duties depend on the applicable FAIS and insurer requirements.</p></div>
             </div>
-            <small>AA Wealth Management · FSP 50739 · Commission-only opportunity</small>
+            <p className="agent-enquiry-contact">
+              Prefer to make contact directly? <a href="mailto:hello@aawealthmanagement.co.za">hello@aawealthmanagement.co.za</a>
+            </p>
           </div>
+          <AgentInterestForm />
         </div>
       </section>
     </SiteLayout>
