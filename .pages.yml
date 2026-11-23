@@ -1,0 +1,61 @@
+media:
+  input: public/images/insights
+  output: /images/insights
+content:
+  - name: insights
+    label: AA Wealth Insights
+    type: collection
+    path: content/insights
+    format: yaml-frontmatter
+    filename: "{fields.slug}.md"
+    view:
+      primary: title
+      fields: [title, author, date, category, published]
+      sort: date
+      order: desc
+    fields:
+      - name: slug
+        label: Article URL slug
+        type: string
+        required: true
+        description: Lowercase words joined with hyphens; changing an existing slug changes its public URL.
+        pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      - name: title
+        label: Headline
+        type: string
+        required: true
+      - name: excerpt
+        label: Search and listing summary
+        type: string
+        required: true
+        description: One concise paragraph, ideally 130-160 characters for search previews.
+      - name: author
+        label: Author
+        type: string
+        required: true
+      - name: date
+        label: Publication date
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+      - name: category
+        label: Category
+        type: select
+        options:
+          values: [Consumer protection, Industry insights, Field and digital distribution, Financial wellbeing, Company news]
+      - name: published
+        label: Publicly published
+        type: boolean
+        description: Switch off to hide the article from the website and sitemap.
+      - name: featured
+        label: Feature on homepage
+        type: boolean
+      - name: body
+        label: Article
+        type: rich-text
+        required: true
+        options:
+          format: markdown
+          media: false
+          switcher: true

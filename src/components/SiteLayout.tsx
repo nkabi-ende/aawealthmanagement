@@ -15,7 +15,7 @@ const NAV = [
   { to: "/", label: "Home" },
   { to: "/services", label: "Cover" },
   { to: "/about", label: "About" },
-  { to: "/faq", label: "FAQ" },
+  { to: "/insights", label: "Insights" },
   { to: "/contact", label: "Contact" },
 ];
 
@@ -207,12 +207,15 @@ function SiteFooter() {
             <h4>Work with us</h4>
             <Link to="/for-agents">For Agents</Link>
             <Link to="/for-brokers">For Brokers</Link>
+            <Link to="/insights">Insights &amp; articles</Link>
           </nav>
           <div>
             <h4>Contact</h4>
             <a href="tel:+27765885126">076 588 5126</a>
             <a href={WA_URL}>WhatsApp us</a>
             <a href="mailto:hello@aawealthmanagement.co.za">hello@aawealthmanagement.co.za</a>
+            <a href="mailto:support@aawealthmanagement.co.za">support@aawealthmanagement.co.za</a>
+            <Link to="/faq">Help &amp; FAQs</Link>
             <address style={{ fontStyle: "normal", color: "rgba(255,255,255,.7)", marginTop: 9 }}>
               Durban, KwaZulu-Natal
               <br />
