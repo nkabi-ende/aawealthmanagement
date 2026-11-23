@@ -3,6 +3,7 @@ import { ArrowUpRight, ShieldCheck, Heart, Wallet, Users, Check, ArrowRight, Bad
 import SiteLayout from "@/components/SiteLayout";
 import { ReviewButton, useReview } from "@/components/ReviewDialog";
 import CoverGrid from "@/components/CoverGrid";
+import { getFeaturedInsight, prettyInsightDate } from "@/lib/insights";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -93,6 +94,7 @@ const goals = [
 ];
 function Home() {
   const { openReview } = useReview();
+  const featuredInsight = getFeaturedInsight();
   function choose(value: string) {
     openReview(value);
   }
@@ -446,6 +448,36 @@ function Home() {
           </div>
         </div>
       </section>
+      {featuredInsight && <section className="sec white home-insights" aria-labelledby="home-insights-title">
+        <div className="wrap home-insights-grid">
+          <div>
+            <p className="eyebrow">AA Wealth / Insights</p>
+            <h2 id="home-insights-title">The right information can be <em>powerful protection.</em></h2>
+            <p>
+              Read our latest consumer-protection perspective on disputed funeral-policy
+              deductions, food-voucher promises and why meaningful consent matters.
+            </p>
+            <Link to="/insights" className="home-insights-link">Explore all insights <ArrowRight size={17} aria-hidden="true" /></Link>
+          </div>
+          <article className="home-insights-feature">
+            <div className="home-insights-feature-top"><span>CONSUMER PROTECTION</span><span>AA / EDITORIAL</span></div>
+            <h3>
+              <Link
+                to="/insights/$slug"
+                params={{ slug: featuredInsight.slug }}
+              >
+                {featuredInsight.title}
+              </Link>
+            </h3>
+            <p>{featuredInsight.excerpt}</p>
+            <div><span>{featuredInsight.author} · {prettyInsightDate(featuredInsight.date)}</span><Link
+              to="/insights/$slug"
+              params={{ slug: featuredInsight.slug }}
+              aria-label={"Read " + featuredInsight.title}
+            ><ArrowUpRight size={20} aria-hidden="true" /></Link></div>
+          </article>
+        </div>
+      </section>}
       <section className="sec ivory home-work" aria-labelledby="home-work-title">
         <div className="wrap home-work-grid">
           <div>

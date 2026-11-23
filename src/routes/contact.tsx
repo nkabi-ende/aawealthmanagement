@@ -74,6 +74,11 @@ function Contact() {
                 hello@aawealthmanagement.co.za
               </a>
               <br />
+              <strong style={{ color: "var(--navy)" }}>Support:</strong>{" "}
+              <a href="mailto:support@aawealthmanagement.co.za" style={{ color: "var(--emerald)" }}>
+                support@aawealthmanagement.co.za
+              </a>
+              <br />
               <strong style={{ color: "var(--navy)" }}>Area:</strong> Durban, KwaZulu-Natal —
               serving all of South Africa remotely.
             </p>
