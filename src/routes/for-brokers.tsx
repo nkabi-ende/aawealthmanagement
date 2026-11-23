@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import SiteLayout from "@/components/SiteLayout";
+import SalesPlaybookDialog from "@/components/SalesPlaybookDialog";
 import {
   buildBrokerEnquiryMessage,
   emailEnquiryUrl,
@@ -30,22 +31,53 @@ import {
 export const Route = createFileRoute("/for-brokers")({
   head: () => ({
     meta: [
-      { title: "For Brokers | Websites, CRM & Growth Services — AA Wealth" },
+      { title: "Insurance Broker CRM, Leads & Websites | AA Wealth" },
       {
         name: "description",
         content:
-          "Website development, CRM setup, social media marketing, lead management, lead optimisation and agent enablement for South African insurance brokers. Discuss broker services with AA Wealth Management, FSP 50739.",
+          "CRM for life and funeral insurance brokers in South Africa. Insurance website design, lead generation, CRM setup, lead management, social marketing and agent training.",
       },
-      { property: "og:title", content: "AA Wealth | Websites, CRM & Growth for Insurance Brokers" },
+      { property: "og:title", content: "Insurance Broker CRM, Leads & Websites | AA Wealth" },
       {
         property: "og:description",
-        content: "Brokerage websites, lead management, CRM integration, digital campaigns and sales-team enablement. Scope the right service package for your insurance business.",
+        content: "CRM for life and funeral insurance brokers: lead generation, lead management, website development, marketing and sales enablement across South Africa.",
       },
       { property: "og:url", content: "https://aawealthmanagement.co.za/for-brokers" },
-      { name: "twitter:title", content: "AA Wealth | Growth Services for Brokers" },
+      { name: "twitter:title", content: "CRM & Lead Generation for Insurance Brokers | AA Wealth" },
       {
         name: "twitter:description",
-        content: "Websites, marketing, CRM, lead routing and agent enablement for South African insurance brokers.",
+        content: "Insurance CRM setup, websites, lead generation, digital marketing and sales operations for South African brokers.",
+      },
+    ],
+    links: [{ rel: "canonical", href: "https://aawealthmanagement.co.za/for-brokers" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebPage",
+              name: "CRM, Lead Generation and Websites for Insurance Brokers",
+              url: "https://aawealthmanagement.co.za/for-brokers",
+              description:
+                "Digital marketing, website development, CRM implementation and sales operations for South African insurance brokers.",
+              isPartOf: { "@type": "WebSite", url: "https://aawealthmanagement.co.za", name: "AA Wealth Management" },
+            },
+            {
+              "@type": "Service",
+              name: "Insurance brokerage digital growth and operations services",
+              serviceType: "Brokerage websites, CRM setup, lead management, digital marketing and sales process enablement",
+              provider: {
+                "@type": "Organization",
+                name: "AA Wealth Management",
+                url: "https://aawealthmanagement.co.za",
+              },
+              areaServed: { "@type": "Country", name: "South Africa" },
+              url: "https://aawealthmanagement.co.za/for-brokers",
+            },
+          ],
+        }),
       },
     ],
   }),
@@ -211,7 +243,7 @@ function ForBrokers() {
         <div className="wrap partner-hero-grid">
           <div>
             <p className="partner-hero-eyebrow"><span /> AA WEALTH / BROKER GROWTH SERVICES</p>
-            <h1>Your brokerage deserves more than <em>another lead.</em></h1>
+            <h1>Websites, CRM & lead generation <em>for insurance brokers.</em></h1>
             <p className="partner-hero-copy">
               Websites, CRM systems, marketing, lead operations and agent enablement —
               designed around the way insurance brokers actually work.
@@ -305,6 +337,54 @@ function ForBrokers() {
         </div>
       </section>
 
+      <section className="sec white broker-search-section" aria-labelledby="broker-search-heading">
+        <div className="wrap">
+          <div className="partner-section-heading">
+            <div>
+              <p className="eyebrow">Insurance-specific digital services</p>
+              <h2 id="broker-search-heading">CRM and lead generation built for insurance brokers.</h2>
+            </div>
+            <p>Practical workflows for life insurance, funeral cover and other authorised brokerage distribution teams.</p>
+          </div>
+          <div className="broker-intent-grid">
+            <article>
+              <span>01 / BROKER CRM</span>
+              <h3>CRM for life and funeral insurance brokers</h3>
+              <p>
+                Need a CRM for your insurance brokerage in South Africa? We can help assess your
+                current workflow, configure Zoho CRM or another suitable platform, connect
+                website enquiries, assign prospects to representatives and track follow-up.
+                A CRM does not replace a specialist policy administration system without a
+                properly scoped integration.
+              </p>
+              <a href="#broker-enquiry">Discuss insurance CRM setup <ArrowRight size={16} aria-hidden="true" /></a>
+            </article>
+            <article>
+              <span>02 / LEAD GENERATION</span>
+              <h3>Funeral and life insurance lead generation</h3>
+              <p>
+                Connect local search, Google Ads, social media campaigns and mobile-friendly
+                landing pages to a clear qualification and lead management process.
+                Improve campaign attribution, response-time reporting, lead quality and
+                conversion follow-up rather than buying unverified bulk lead lists.
+              </p>
+              <a href="#broker-enquiry">Discuss lead generation and optimisation <ArrowRight size={16} aria-hidden="true" /></a>
+            </article>
+            <article>
+              <span>03 / WEB & MARKETING</span>
+              <h3>Insurance broker websites and digital marketing</h3>
+              <p>
+                Present your brokerage professionally with search-friendly service pages,
+                compliant quote enquiries, Google Business Profile optimisation and
+                social media marketing for insurance brokers. We can scope tracking and
+                reporting from enquiry source through advisor handover.
+              </p>
+              <a href="#broker-enquiry">Discuss a broker website <ArrowRight size={16} aria-hidden="true" /></a>
+            </article>
+          </div>
+        </div>
+      </section>
+
       <section className="sec ivory broker-approach-section">
         <div className="wrap">
           <div className="partner-section-heading">
@@ -377,6 +457,42 @@ function ForBrokers() {
                 <ArrowUpRight size={15} aria-hidden="true" />
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="sec ivory broker-playbook-section" aria-labelledby="broker-playbook-heading">
+        <div className="wrap broker-playbook-grid">
+          <div>
+            <p className="eyebrow">AA WEALTH / FIELD & DIGITAL SALES</p>
+            <h2 id="broker-playbook-heading">Give your team a consistent sales <em>playbook.</em></h2>
+            <p>
+              See a guided example for funeral and life insurance field representatives,
+              digital lead handling and CRM follow-up — from the first conversation to
+              an authorised advisor handover and performance review.
+            </p>
+            <div className="broker-playbook-points">
+              <span><Check size={15} aria-hidden="true" /> Field scripts & needs review</span>
+              <span><Check size={15} aria-hidden="true" /> Digital lead workflows</span>
+              <span><Check size={15} aria-hidden="true" /> Compliance checkpoints</span>
+            </div>
+            <SalesPlaybookDialog />
+            <small>
+              Illustrative guide, not a verified copy of the previous AA Wealth playbook;
+              not accredited FAIS/CPD training or product-specific advice.
+            </small>
+          </div>
+          <div className="broker-playbook-preview" aria-hidden="true">
+            <div className="broker-playbook-preview-header"><span>AA / SALES ENABLEMENT</span><BookOpenCheck size={22}/></div>
+            <p>FIELD / DIGITAL</p>
+            <strong>One standard.<br /><em>Every conversation.</em></strong>
+            <ol>
+              <li><span>01</span> Prepare & position</li>
+              <li><span>02</span> Engage & discover</li>
+              <li><span>03</span> Route & qualify</li>
+              <li><span>04</span> Support & optimise</li>
+            </ol>
+            <span className="broker-playbook-preview-foot">AA Wealth Management · FSP 50739</span>
           </div>
         </div>
       </section>
