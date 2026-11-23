@@ -6,6 +6,11 @@ import { Link, useLocation } from "@tanstack/react-router";
 const WA_URL =
   "https://wa.me/27765885126?text=Sawubona%20AA%20Wealth%2C%20I%27d%20like%20a%20free%20protection%20review";
 
+const AGENT_WA_URL =
+  "https://wa.me/27765885126?text=Hello%20AA%20Wealth%2C%20I%20am%20interested%20in%20joining%20your%20field%20sales%20team.";
+const BROKER_WA_URL =
+  "https://wa.me/27765885126?text=Hello%20AA%20Wealth%2C%20I%20would%20like%20to%20discuss%20a%20broker%20partnership.";
+
 const NAV = [
   { to: "/", label: "Home" },
   { to: "/services", label: "Cover" },
@@ -26,6 +31,13 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const loc = useLocation();
+  const isPartnerRoute = loc.pathname === "/for-agents" || loc.pathname === "/for-brokers";
+  const activeWhatsAppUrl =
+    loc.pathname === "/for-agents"
+      ? AGENT_WA_URL
+      : loc.pathname === "/for-brokers"
+        ? BROKER_WA_URL
+        : WA_URL;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -62,6 +74,17 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
                 {n.label}
               </Link>
             ))}
+            <details className={`nav-partners${isPartnerRoute ? " active" : ""}`} key={loc.pathname}>
+              <summary>Work with us <span aria-hidden="true">⌄</span></summary>
+              <div className="nav-partners-menu">
+                <Link to="/for-agents">
+                  <strong>For Agents</strong><small>Field sales opportunities</small>
+                </Link>
+                <Link to="/for-brokers">
+                  <strong>For Brokers</strong><small>Distribution & partnerships</small>
+                </Link>
+              </div>
+            </details>
           </nav>
           <div className="nav-cta">
             <ReviewButton
@@ -70,7 +93,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
             >
               Free Review
             </ReviewButton>
-            <a href={WA_URL} className="wa-btn" aria-label="Chat with AA Wealth on WhatsApp">
+            <a href={activeWhatsAppUrl} className="wa-btn" aria-label="Chat with AA Wealth on WhatsApp">
               <WaIcon />
             </a>
             <button
@@ -93,26 +116,40 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
             {n.label}
           </Link>
         ))}
-        <ReviewButton className="btn btn-gold" onClick={() => setOpen(false)}>
+        <p className="mobile-menu-label">Work with us</p>
+        <Link to="/for-agents">For Agents</Link>
+        <Link to="/for-brokers">For Brokers</Link>
+        {!isPartnerRoute && <ReviewButton className="btn btn-gold" onClick={() => setOpen(false)}>
           Get my free review
-        </ReviewButton>
+        </ReviewButton>}
       </div>
 
       <main id="main" tabIndex={-1}>
         {children}
       </main>
 
-      <FinalCta />
+      {!isPartnerRoute && <FinalCta />}
       <SiteFooter />
 
-      <a className="fab" href={WA_URL} aria-label="Chat on WhatsApp">
+      <a className="fab" href={activeWhatsAppUrl} aria-label="Chat on WhatsApp">
         <WaIcon size={30} />
       </a>
       <div className="mbar">
-        <ReviewButton className="btn btn-gold">Free review</ReviewButton>
-        <a href={WA_URL} className="btn btn-green">
-          <WaIcon size={18} /> WhatsApp
-        </a>
+        {isPartnerRoute ? (
+          <>
+            <a href="mailto:hello@aawealthmanagement.co.za" className="btn btn-gold">Email us</a>
+            <a href={activeWhatsAppUrl} className="btn btn-green">
+              <WaIcon size={18} /> WhatsApp
+            </a>
+          </>
+        ) : (
+          <>
+            <ReviewButton className="btn btn-gold">Free review</ReviewButton>
+            <a href={activeWhatsAppUrl} className="btn btn-green">
+              <WaIcon size={18} /> WhatsApp
+            </a>
+          </>
+        )}
       </div>
     </>
   );
@@ -165,6 +202,11 @@ function SiteFooter() {
             <Link to="/services">Income protection</Link>
             <Link to="/services">Critical illness</Link>
             <Link to="/services">Savings &amp; retirement</Link>
+          </nav>
+          <nav aria-label="Work with us">
+            <h4>Work with us</h4>
+            <Link to="/for-agents">For Agents</Link>
+            <Link to="/for-brokers">For Brokers</Link>
           </nav>
           <div>
             <h4>Contact</h4>
