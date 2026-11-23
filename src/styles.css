@@ -3316,3 +3316,37 @@ header.site {
   .broker-package-card { transition: none; }
   .broker-package-card:hover { transform: none; }
 }
+
+
+/* Professional services FAQ — minimal editorial style with native accessible disclosures */
+.partner-faq-grid {
+  display: grid; grid-template-columns: minmax(0,.75fr) minmax(0,1.25fr);
+  gap: clamp(32px,8vw,110px); align-items: start;
+}
+.partner-faq-grid h2 {
+  font-size: clamp(2rem,3.3vw,3.4rem); font-weight: 500; line-height: 1.12;
+  margin: 13px 0 21px;
+}
+.partner-faq-grid > div:first-child > p:last-child {
+  max-width: 390px; font-size: .9rem; color: var(--slate);
+}
+.partner-faq-items { border-top: 1px solid var(--line-2); }
+.partner-faq-items details { border-bottom: 1px solid var(--line-2); }
+.partner-faq-items summary {
+  cursor: pointer; list-style: none; display: flex; align-items: center;
+  justify-content: space-between; gap: 24px; padding: 22px 0;
+  color: var(--navy); font-weight: 700; font-size: .94rem;
+}
+.partner-faq-items summary::-webkit-details-marker { display: none; }
+.partner-faq-items summary:after {
+  content: "+"; font-family: var(--sans); font-weight: 400; font-size: 1.4rem;
+  color: var(--emerald); line-height: 1; flex: none;
+}
+.partner-faq-items details[open] summary:after { content: "−"; }
+.partner-faq-items details p { max-width: 690px; padding: 0 32px 23px 0; color: var(--slate); font-size: .88rem; line-height: 1.7; }
+@media (max-width: 960px) {
+  .partner-faq-grid { grid-template-columns: 1fr; gap: 23px; }
+}
+@media (max-width: 650px) {
+  .partner-faq-items summary { padding: 18px 0; font-size: .88rem; }
+}

@@ -36,6 +36,17 @@ export const Route = createFileRoute("/for-brokers")({
         content:
           "Website development, CRM setup, social media marketing, lead management, lead optimisation and agent enablement for South African insurance brokers. Discuss broker services with AA Wealth Management, FSP 50739.",
       },
+      { property: "og:title", content: "AA Wealth | Websites, CRM & Growth for Insurance Brokers" },
+      {
+        property: "og:description",
+        content: "Brokerage websites, lead management, CRM integration, digital campaigns and sales-team enablement. Scope the right service package for your insurance business.",
+      },
+      { property: "og:url", content: "https://aawealthmanagement.co.za/for-brokers" },
+      { name: "twitter:title", content: "AA Wealth | Growth Services for Brokers" },
+      {
+        name: "twitter:description",
+        content: "Websites, marketing, CRM, lead routing and agent enablement for South African insurance brokers.",
+      },
     ],
   }),
   component: ForBrokers,
@@ -405,6 +416,38 @@ function ForBrokers() {
             <div><span>01 / DISCOVER</span><h3>Understand</h3><p>What you sell, where enquiries come from and where your team spends its time.</p></div>
             <div><span>02 / PRIORITISE</span><h3>Diagnose</h3><p>Identify the highest-impact gaps across acquisition, follow-up, sales and servicing.</p></div>
             <div><span>03 / SCOPE</span><h3>Propose</h3><p>Agree a defined scope, delivery model, responsibilities and measurable outcomes.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="sec white broker-faq-section" aria-labelledby="broker-faq-heading">
+        <div className="wrap partner-faq-grid">
+          <div>
+            <p className="eyebrow">Before we work together</p>
+            <h2 id="broker-faq-heading">Good questions.<br />Straight answers.</h2>
+            <p>Every brokerage runs differently. Here are a few practical starting points.</p>
+          </div>
+          <div className="partner-faq-items">
+            <details>
+              <summary>Do we have to move to Zoho CRM?</summary>
+              <p>No. We can review your existing CRM or brokerage platform first. A migration or integration would be separately scoped based on what your current system supports.</p>
+            </details>
+            <details>
+              <summary>Do your marketing services include advertising spend?</summary>
+              <p>Not automatically. Creative production, campaign management, ad budgets and platform subscriptions should be itemised in your proposal.</p>
+            </details>
+            <details>
+              <summary>Can you help train our sales agents?</summary>
+              <p>We can scope sales-process materials, product-journey enablement and operational coaching. Accredited FAIS training, regulatory examinations, CPD and statutory supervision are separate regulated responsibilities.</p>
+            </details>
+            <details>
+              <summary>Will this guarantee more policies or a specific number of leads?</summary>
+              <p>No. We focus on clear objectives, measurable work and practical improvements, but outcomes depend on your market, proposition, spend, compliance approvals and execution.</p>
+            </details>
+            <details>
+              <summary>Can we start with just one service?</summary>
+              <p>Yes. A website, CRM cleanup, lead routing redesign or campaign audit can be scoped independently. A wider engagement is only useful when the business needs it.</p>
+            </details>
           </div>
         </div>
       </section>
